@@ -125,9 +125,9 @@
     display: block;
     flex-grow: 0; /* Don’t grow beyond initial size */
     flex-shrink: 0; /* Don’t shrink below initial size */
-    width: var(--nav-width); /* Or whatever width you desire */
     min-height: 100vh;
     background: var(--color_side_bar_gray);
+    min-width: var(--nav-width);
   }
   .navbar_side_wide a {
     padding: 0.5rem;
@@ -784,6 +784,12 @@
   flex-wrap: wrap;
   padding-top: 2rem;
 }
+.home_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
 .home_page .col_1 {
   display: flex;
   justify-content: center;
@@ -834,35 +840,72 @@
   gap: 1rem;
 }
 .download_ios_page .title_custom {
+  width: 100%;
   justify-content: center;
 }
-.download_ios_page .paragraph_home {
+.download_ios_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.download_ios_page .std_frame_sub {
   padding: 0.5rem 0;
   color: var(--color_text_dark);
 }
-.download_ios_page .paragraph_2_columns {
+.download_ios_page .std_frame_sub_register_login {
+  padding: 0.5rem 0;
+  color: var(--color_text_dark);
+  width: 100%;
+}
+.download_ios_page .std_frame_sub_2_columns {
   display: flex;
   height: 100%;
   width: 80%;
   justify-content: space-between;
   color: var(--color_text_dark);
 }
-.download_ios_page .download_ios a {
-  color: var(--color_theme_blue);
-  text-decoration: none;
-}
-.download_ios_page .std_frame_fixed_size {
-  height: 6rem;
-}
-.download_ios_page .std_frame_fixed_size_bigger {
-  height: 10rem;
-}
-.download_ios_page .flex_center_vertically {
+.download_ios_page .std_frame_sub_col_1 {
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.download_ios_page .std_frame_sub_col_1_main_text {
+  width: 100%;
+}
+.download_ios_page .std_frame_sub_col_1_center_text {
   align-items: center;
+  width: 100%;
+}
+.download_ios_page .std_frame_sub_col_1_small_text {
+  font-size: small;
+  padding: 0.5rem 1rem;
+}
+.download_ios_page .std_frame_sub_col_2 {
+  display: flex;
+  justify-content: end;
+  max-width: 10rem;
+}
+.download_ios_page .std_frame_sub_col_2 a {
+  display: inline-block;
+  width: 1rem;
 }
 .download_ios_page .img_screen_shot {
   height: 100%;
+  max-width: 10rem;
+  object-fit: contain;
+}
+.download_ios_page .std_frame_download {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 6rem;
+}
+.download_ios_page .std_frame_download_taller {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 10rem;
 }
 .download_ios_page .lightbox {
   display: none;
@@ -888,49 +931,36 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  flex-direction: row-reverse;
+  padding-top: 2rem;
 }
-.about_page .col_1, .about_page .col_2 {
+.about_page .col_1 {
   display: flex;
   justify-content: center;
-  color: var(--color-gray-text);
+  color: var(--color_text_white);
   width: 100%;
 }
-.about_page .col_1_sub, .about_page .col_2_sub {
+.about_page .col_1_sub {
   display: flex;
   flex-wrap: wrap;
   width: 80%;
-  height: fit-content;
-  justify-content: center;
-}
-.about_page .div_image_of_me {
-  width: 100%;
-  justify-content: center;
-  display: flex;
-}
-.about_page .img_montmarte {
-  width: 60%;
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 0.5rem;
-}
-.about_page .other_contact {
-  padding: 3rem 0;
-  width: 60%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 1rem;
 }
-.about_page .s_text_color_yellow {
-  color: var(--color-yellow);
+.about_page .title_custom {
+  width: 100%;
+  justify-content: center;
 }
-.about_page .div_hi_big {
+.about_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
   width: 100%;
 }
-.about_page .paragraph_home {
+.about_page .std_frame_sub {
   padding: 0.5rem 0;
+  color: var(--color_text_dark);
 }
 
+/* OLD - Used for Personal Website 02 */
 .resume_page {
   color: var(--color-gray-text);
   width: 100%;
@@ -1205,16 +1235,6 @@ html body {
   display: flex;
   width: 100%;
   justify-content: center;
-}
-
-.std_frame_light_gray {
-  background-color: var(--color-gray02);
-  border-radius: 0.5rem;
-  padding: 1rem;
-}
-
-.width_100 {
-  width: 100%;
 }
 
 @media screen and (min-width: 768px) {

@@ -95,25 +95,25 @@
       {% block main %}{% endblock %}
     </div><!-- flash_and_main -->
 
-        <!-- Big Screen Navbar-->
-        <div  class="navbar_side navbar_side_wide">
-          <div class="div_logo">
-            <a href="{{ url_for('bp_main.home') }}">
-              <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}"/>
-            </a>
-          </div>
-          <div class="navbar_list">
-            <ul>
-              <li><a href="{{ url_for('bp_users.login') }}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
-              <li><a href="{{ url_for('bp_main.about') }}"><i class="fa-regular fa-address-card"></i>About</a></li>
-              <li><a href="{{ url_for('bp_main.download_ios') }}"><i class="fa-solid fa-download"></i>Download iOS</a></li>
-              {% if current_user.is_authenticated %}  
-                <li class="li_manage_blogpost"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span class="li_manage_blogpost_font">Admin</span></a></li>    
-              {% endif %}  
-            </ul>
-      
-          </div><!-- navbar_list -->
-        </div><!-- navbar_side navbar_side_wide -->
+    <!-- Big Screen Navbar-->
+    <div  class="navbar_side navbar_side_wide">
+      <div class="div_logo">
+        <a href="{{ url_for('bp_main.home') }}">
+          <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}"/>
+        </a>
+      </div>
+      <div class="navbar_list">
+        <ul>
+          <li><a href="{{ url_for('bp_users.login') }}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+          <li><a href="{{ url_for('bp_main.about') }}"><i class="fa-regular fa-address-card"></i>About</a></li>
+          <li><a href="{{ url_for('bp_main.download_ios') }}"><i class="fa-solid fa-download"></i>Download iOS</a></li>
+          {% if current_user.is_authenticated %}  
+            <li class="li_manage_blogpost"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span class="li_manage_blogpost_font">Admin</span></a></li>    
+          {% endif %}  
+        </ul>
+  
+      </div><!-- navbar_list -->
+    </div><!-- navbar_side navbar_side_wide -->
 
 
   </div><!-- div_fixed_nav_and_main-->

@@ -7,64 +7,81 @@
         <div class="col_1">
 
             <div class="col_1_sub">
-                <div class="title_custom width_100">
-                    <h1>
-                        What Sticks
-                      </h1>
+                <div class="title_custom">
+                    <h1>What Sticks</h1>
                 </div>
 
-                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
-                    <div class="paragraph_home">
-                        Download the TestFligh Application and start using
+                <div class="std_frame_light_gray std_frame_download">
+                    <div class="std_frame_sub">
+                        <div class="std_frame_sub_col_1_main_text">Download Apple <i>TestFlight</i> and start using What Sticks.</div>
+ 
+
                     </div>
                 </div><!-- std_frame_light_gray -->
 
-                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
-                    <div class="paragraph_home">
+                <div class="std_frame_light_gray std_frame_download">
+                    <div class="std_frame_sub">
                         Step 1: click on this link: 
                         <a href="https://testflight.apple.com/join/LHzvgt5g" target="_blank">https://testflight.apple.com/join/LHzvgt5g</a>
                     </div>
                 </div><!-- std_frame_light_gray -->
 
-                <div class="std_frame_light_gray width_100 std_frame_fixed_size_bigger flex_center_vertically">
-                    <div class="paragraph_2_columns">
-                        <div>Step 2: Download TestFlight</div>
-                        <a href="#img1">
-                            <img class="img_screen_shot" src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
-                        </a>
-                        
-                    </div>
-                </div><!-- std_frame_light_gray -->
+                <div class="std_frame_light_gray std_frame_download_taller">
+                    <div class="std_frame_sub_2_columns">
+                        <div class="std_frame_sub_col_1">
+                            <div class="std_frame_sub_col_1_main_text">
+                                Step 2: Download TestFlight 
+                            </div>
+                            
+                            <div class="std_frame_sub_col_1_small_text">
+                                TestFlight is an Apple Application that allows testing of new applicaitons.
+                            </div>
+                            
+                        </div>
+                        <div class="std_frame_sub_col_2">
+                            <a href="#DownloadTestFlight">
+                                <img class="img_screen_shot" 
+                                src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
+                            </a>
+                        </div>
+                    </div><!-- std_frame_sub_2_columns -->
+                </div><!-- std_frame_light_gray std_frame_download_taller -->
 
+                <div class="std_frame_light_gray std_frame_download_taller">
+                    <div class="std_frame_sub_2_columns">
+                        <div class="std_frame_sub_col_1">Step 3: In TestFlight select the latest What Sticks</div>
+                        <div class="std_frame_sub_col_2">
+                            <a href="#DownloadWhatSticks">
+                                <img class="img_screen_shot" 
+                                src="{{ url_for('bp_main.website_images', filename='DownloadWhatSticks_v03_arrow.jpeg') }}"/>
+                            </a>
+                        </div>
+                    </div><!-- std_frame_sub_2_columns -->
+                </div><!-- std_frame_light_gray std_frame_download_taller -->
 
-
-
-
-
-
-
-                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
-                    <div class="paragraph_home download_ios">
-                        <a href="{{ url_for('bp_main.download_ios') }}">Download iOS</a>
-                        
-                    </div>
-                </div><!-- std_frame_light_gray -->
-
-
-
+                <div class="std_frame_light_gray std_frame_download">
+                    <div class="std_frame_sub_register_login">
+                        <div class="std_frame_sub_col_1 std_frame_sub_col_1_center_text"><h3>Register and login!</h3></div>
+                    </div><!-- std_frame_sub_2_columns -->
+                </div><!-- std_frame_light_gray std_frame_download_taller -->
             </div><!-- col_1_sub -->
         </div><!-- col_1 -->
 
-        <div id="img1" class="lightbox">
+        <div id="DownloadTestFlight" class="lightbox">
             <a href="#">
-                <img class="img_screen_shot" src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
+                <img class="img_screen_shot" 
+                src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
             </a>
-        </div>
+        </div><!-- lightbox: DownloadTestFlight -->
+
+        <div id="DownloadWhatSticks" class="lightbox">
+            <a href="#">
+                <img class="img_screen_shot" 
+                src="{{ url_for('bp_main.website_images', filename='DownloadWhatSticks_v03_arrow.jpeg') }}"/>
+            </a>
+        </div><!-- lightbox: DownloadWhatSticks -->
     </div><!-- home_page -->
 </div><!-- main_super -->
-
-
-
 
 
 

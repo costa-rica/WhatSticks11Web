@@ -107,9 +107,10 @@
         display:block;
         flex-grow: 0;  /* Don’t grow beyond initial size */
         flex-shrink: 0;  /* Don’t shrink below initial size */
-        width: var(--nav-width);  /* Or whatever width you desire */
+        //width: var(--nav-width);  /* Or whatever width you desire */
         min-height: 100vh;
         background: var(--color_side_bar_gray);
+        min-width:var(--nav-width);
     }
     .navbar_side_wide a {
         padding: .5rem;

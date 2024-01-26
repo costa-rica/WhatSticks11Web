@@ -3,7 +3,12 @@
     gap:1rem;
     flex-wrap: wrap;
     padding-top:2rem;
-
+    .std_frame_light_gray{
+        background-color: var(--color-gray02);
+        border-radius: .5rem;
+        padding:1rem;
+        width:100%;
+      }
     .col_1 {
         display:flex;
         justify-content: center;
@@ -55,38 +60,84 @@
         gap: 1rem;
     }
     .title_custom{
+        width:100%;
         justify-content: center;
     }
-    .paragraph_home{
+    .std_frame_light_gray{
+        background-color: var(--color-gray02);
+        border-radius: .5rem;
+        padding:1rem;
+      }
+    .std_frame_sub{
         padding: .5rem 0;
         color:var(--color_text_dark);
     }
-    .paragraph_2_columns{
+    .std_frame_sub_register_login{
+        padding: .5rem 0;
+        color:var(--color_text_dark);
+        width:100%;
+    }
+    .std_frame_sub_2_columns{
         display: flex;
         height:100%;
         width:80%;
         justify-content: space-between;
         color:var(--color_text_dark);
     }
-    .download_ios a{
-        color: var(--color_theme_blue);
-        text-decoration: none;
-    }
-    .std_frame_fixed_size{
-        height: 6rem;
-    }
-    .std_frame_fixed_size_bigger{
-        height: 10rem;
-    }
-    .flex_center_vertically{
+
+    .std_frame_sub_col_1{
+        // background-color: red;
         display:flex;
-        align-items:center;
+        // align-items: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .std_frame_sub_col_1_main_text{
+        width:100%;
+    }
+    .std_frame_sub_col_1_center_text{
+        align-items: center;
+        // background-color: green;
+        width:100%;
+    }
+    .std_frame_sub_col_1_small_text{
+        // padding-top:.5rem;
+        font-size: small;
+        padding:.5rem 1rem;
+    }
+
+    .std_frame_sub_col_2{
+        display:flex;
+        justify-content: end;
+        // background-color: red;
+        max-width:10rem;
+        a{
+            display: inline-block;
+            width:1rem;// <-- only way I found to keep a tag from expanding too wide.
+        }
     }
     .img_screen_shot{
         height:100%;
+        max-width:10rem;
+        object-fit: contain;
     }
 
+    .std_frame_download{
+        display:flex;
+        align-items:center;
+        width:100%;
+        height: 6rem;
+    }
 
+    // .std_frame_download_two_cols{
+    .std_frame_download_taller{
+        display:flex;
+        align-items:center;
+        width:100%;
+        // max-width:80%;
+        height: 10rem;
+    }
     .lightbox {
         display: none;
         position: fixed;
@@ -109,66 +160,99 @@
         display: block;
     }
 
-
 }
-
-
-
-
-
-
-
 
 .about_page{
     display: flex;
     gap:1rem;
     flex-wrap: wrap;
-    flex-direction: row-reverse;
-    .col_1, .col_2 {
+    padding-top:2rem;
+    // width: calc(100% - var(--nav-width));
+
+    .col_1 {
         display:flex;
         justify-content: center;
-        color:var(--color-gray-text);
+        color:var(--color_text_white);
         width:100%;
     }
-    .col_1_sub, .col_2_sub{
+    .col_1_sub{
         display:flex;
         flex-wrap:wrap;
         width: 80%;
-        height:fit-content;
+        gap: 1rem;
+    }
+    .title_custom{
+        width:100%;
         justify-content: center;
-        // background-color: var(--color_gray_test_01);
+        // color: white;
     }
-    .div_image_of_me{
-        // background-color: var(--color_gray_test_01);
-        width: 100%;
-        justify-content: center;
-        display: flex;
-
-    }
-    .img_montmarte{
-        width:60%;
-        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-        border-radius: 0.5rem;
-    }
-    .other_contact{
-        padding:3rem 0;
-        width:60%;
-        display:flex;
-        flex-wrap:wrap;
-        justify-content: center;
-        gap:1rem;
-    }
-    .s_text_color_yellow{color:var(--color-yellow)}
-    .div_hi_big{width:100%}
-    // .div_welcome{
-    //     width:100%;
-    //     color: var(--color_gray_test_01)
-    // }
-    // .paragraph_home_super{padding-top:5rem;}
-    .paragraph_home{
+    .std_frame_light_gray{
+        background-color: var(--color-gray02);
+        border-radius: .5rem;
+        padding:1rem;
+        width:100%;
+      }
+    .std_frame_sub{
         padding: .5rem 0;
+        color:var(--color_text_dark);
     }
 }
+
+
+/* OLD - Used for Personal Website 02 */
+
+
+
+// .about_page{
+//     display: flex;
+//     gap:1rem;
+//     flex-wrap: wrap;
+//     flex-direction: row-reverse;
+//     .col_1, .col_2 {
+//         display:flex;
+//         justify-content: center;
+//         color:var(--color-gray-text);
+//         width:100%;
+//     }
+//     .col_1_sub, .col_2_sub{
+//         display:flex;
+//         flex-wrap:wrap;
+//         width: 80%;
+//         height:fit-content;
+//         justify-content: center;
+//         // background-color: var(--color_gray_test_01);
+//     }
+//     .div_image_of_me{
+//         // background-color: var(--color_gray_test_01);
+//         width: 100%;
+//         justify-content: center;
+//         display: flex;
+
+//     }
+//     .img_montmarte{
+//         width:60%;
+//         box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+//         border-radius: 0.5rem;
+//     }
+//     .other_contact{
+//         padding:3rem 0;
+//         width:60%;
+//         display:flex;
+//         flex-wrap:wrap;
+//         justify-content: center;
+//         gap:1rem;
+//     }
+//     .s_text_color_yellow{color:var(--color-yellow)}
+//     .div_hi_big{width:100%}
+//     // .div_welcome{
+//     //     width:100%;
+//     //     color: var(--color_gray_test_01)
+//     // }
+//     // .paragraph_home_super{padding-top:5rem;}
+//     .paragraph_home{
+//         padding: .5rem 0;
+//     }
+// }
 
 .resume_page{
     color:var(--color-gray-text);
