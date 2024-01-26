@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
+  <script src="https://kit.fontawesome.com/dd4fc26679.js" crossorigin="anonymous"></script>
+  
+  <!-- Added bootstrap -->
+  <link rel="stylesheet" href="../static/additional_styling/bootstrap-5.3.2-dist/css/bootstrap.min.css">
+  <script src="../static/additional_styling/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+
+  <!-- <link rel="icon" href=" url_for('bp_main.website_files', filename='logo02_whiteBck.svg') " type="image/x-icon"> -->
+
+  <!-- Favicon Links -->
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}"> -->
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('bp_main.website_images_favicon', filename='favicon-32x32.png') }}">
+
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('bp_main.website_images_favicon', filename='favicon-16x16.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('bp_main.website_images_favicon', filename='apple-icon-180x180.png') }}">
+  <link rel="manifest" href="{{ url_for('bp_main.website_images_favicon', filename='manifest.json') }}">
+  <!-- <link rel="shortcut icon" href= url_for('bp_main.favicon_ico')> -->
+  <link rel="mask-icon" href="{{ url_for('bp_main.website_images_favicon', filename='16x16_forSafari.svg') }}" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+
+
+  <title>What Sticks</title>
+</head>
+
+<body>
+  <div id="navbar_top" class="navbar_top" >
+    <div class="div_hamburger">
+      <button id="hamburger"  onclick="toggleMenu()"><i class="fas fa-bars" id="btn"></i></button>
+    </div>
+  </div><!-- navbar_top -->
+
+  <!-- Slides out on small screen -->
+  <div id="navbar_side" class="navbar_side navbar_side_hidden">
+    <div class="div_close">
+      <button class="btn_close" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="div_logo">
+      <a href="{{ url_for('bp_main.home') }}">
+        <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}"/>
+      </a>
+    </div>
+    <div class="navbar_list">
+      <ul>
+        <li><a href="{{ url_for('bp_users.login') }}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+        <li><a href="{{ url_for('bp_main.about') }}"><i class="fa-regular fa-address-card"></i>About</a></li>
+        <li><a href="{{ url_for('bp_main.download_ios') }}"><i class="fa-solid fa-download"></i>Download iOS</a></li>
+        {% if current_user.is_authenticated %}  
+          <li class="li_manage_blogpost"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span class="li_manage_blogpost_font">Admin</span></a></li>    
+        {% endif %}  
+        
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" onclick="toggleMenu()"></div>
+
+  
+  <div class="div_fixed_nav_and_main">
+
+
+    <div class="flash_and_main">
+      <div class="flash_custom_parent">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+    
+        <div class="alert alert-{{ category }} alert_custom keep_line_break" id="div_flash">
+          <i class="close icon"></i>
+    
+          {{ message }}
+          <div class="close_right">
+            <input type="button" value=&#10006 onclick="removeFlash()" class=" btn_custom02">
+          </div>
+    
+        </div>
+        {% endfor %}<!-- for category, message in messages -->
+        {% endif %}<!-- if messages -->
+        {% endwith %}<!-- with messages = get_flashed_messages(with_categories=true) -->
+    
+      </div>
+  
+  
+      {% block main %}{% endblock %}
+    </div><!-- flash_and_main -->
+
+        <!-- Big Screen Navbar-->
+        <div  class="navbar_side navbar_side_wide">
+          <div class="div_logo">
+            <a href="{{ url_for('bp_main.home') }}">
+              <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}"/>
+            </a>
+          </div>
+          <div class="navbar_list">
+            <ul>
+              <li><a href="{{ url_for('bp_users.login') }}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+              <li><a href="{{ url_for('bp_main.about') }}"><i class="fa-regular fa-address-card"></i>About</a></li>
+              <li><a href="{{ url_for('bp_main.download_ios') }}"><i class="fa-solid fa-download"></i>Download iOS</a></li>
+              {% if current_user.is_authenticated %}  
+                <li class="li_manage_blogpost"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span class="li_manage_blogpost_font">Admin</span></a></li>    
+              {% endif %}  
+            </ul>
+      
+          </div><!-- navbar_list -->
+        </div><!-- navbar_side navbar_side_wide -->
+
+
+  </div><!-- div_fixed_nav_and_main-->
+
+  
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('navbar_side');
+      const overlay = document.getElementById('overlay');
+
+      menu.classList.toggle('navbar_side_visible');
+      overlay.classList.toggle('visible');
+    }
+</script>
+
+  <!-- Remove flash on click -->
+  <script>
+    function removeFlash() {
+      const element = document.getElementById('div_flash');
+      element.remove();
+    }
+  </script>
+</body>
+</html>

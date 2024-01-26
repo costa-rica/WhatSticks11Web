@@ -1,0 +1,36 @@
+{% extends "_layout.html" %}
+{% block main %}
+<div class="main_super">
+
+    <div class="home_page">
+
+        <div class="col_1">
+            <div class="col_1_sub">
+                <div class="title_custom width_100">
+                    <h1>
+                        What Sticks
+                      </h1>
+                </div>
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
+                    <div class="paragraph_home">
+                        The application that provides insights on sleep and exercise based on data already collected by your devices.
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
+                    <div class="paragraph_home download_ios">
+                        <a href="{{ url_for('bp_main.download_ios') }}">Download iOS</a>
+                        
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+
+
+            </div><!-- col_1_sub -->
+        </div><!-- col_1 -->
+
+    
+    </div><!-- home_page -->
+</div><!-- main_super -->
+{% endblock %}

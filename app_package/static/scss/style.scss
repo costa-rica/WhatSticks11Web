@@ -1,0 +1,123 @@
+@use "navbar";
+@use "buttons";
+@use "users";
+// @use "other_elements";
+@use "blog";
+@use "main";
+@use "support";
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap');
+
+:root {
+    --nav-height: 123px;
+    --nav-width: 300px;
+
+    /* What Sticks Colors */
+
+
+    --color-gray01-light: #d1d1d1;
+    --color-gray02: #bfbfbf;
+    --color-gray03: #a0a0a0;
+    --color-gray04: #808080;
+    --color-gray05: #212121;
+    --color_theme_yellow: #F1B50E;
+    --color_theme_blue: #5987E0;
+
+    --color_background_black: #000000;
+    --color_side_bar_gray: #A8A8A8;
+    --color_text_white: var(--color-gray01-light);
+    --color_text_dark: var(--color-gray05);
+
+
+
+    // --color-gray-text:var(--color-gray01-light);
+    // --color-dark-gray-text:var(--color-gray05);
+
+
+
+    
+    // /* Best Buy Colors */
+    // --color-dark: #003366;// bestbuy
+    // --color-blue-dark: #00509E;//bestbuy
+    // --color-blue: #0072BC;//bestbuy
+    // --color-blue-sidenav: var(--color-dark);//bustbuy
+
+    // --color-yellow: #FFC300;
+    // --color-white: #FFFFFF;
+    // // --color-light-blue-button: #565481;// original button
+    // --color-light-blue-button: var(--color-blue);
+    // --color-gray01-light: #d1d1d1;
+    // --color-gray02: #bfbfbf;
+    // --color-gray03: #a0a0a0;
+    // --color-gray04: #808080;
+    // --color-gray05: #212121;
+    // --color-gray-text:var(--color-gray01-light);
+    // --color-dark-gray-text:var(--color-gray05);
+    // --color_gray_test_01:#898989;
+    // --color-gray-text-title:var(--color-gray01-light);
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    // font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito', sans-serif;
+}
+html body{background-color: var(--color_background_black)}
+
+.flex_center{
+  display: flex;
+  justify-content: center;
+}
+.flash_and_main{
+  display:flex;
+  flex-wrap: wrap;
+  width:100%;
+  flex-direction: column;
+}
+/* Flash */
+.flash_custom_parent {
+  width:100%;
+  max-height:0rem;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto; /* or 0 */
+  .alert_custom {
+    width: 100%;
+    .close_right {
+      float: right;
+      margin-top: -2rem;
+    }
+  }
+  .keep_line_break{
+    white-space: pre-line;
+  }
+}
+.main_super{
+  flex-grow: 2; /* or more, to ensure it takes up more space */
+  flex-shrink: 1;
+  flex-basis: auto; /* adjust as needed */
+  padding: .5rem;
+  display:flex;
+  width:100%;
+  justify-content: center;
+}
+.std_frame_light_gray{
+  background-color: var(--color-gray02);
+  border-radius: .5rem;
+  padding:1rem;
+}
+.width_100{
+  width:100%;
+}
+
+@media screen and (min-width: 768px) {
+  .div_fixed_nav_and_main {
+      display: flex;
+      // height: 100vh;  /* Optional: Takes the full height of the viewport */
+  }
+}
+
+

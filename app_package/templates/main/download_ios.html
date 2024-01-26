@@ -1,0 +1,80 @@
+{% extends "_layout.html" %}
+{% block main %}
+<div class="main_super">
+
+    <div class="download_ios_page">
+
+        <div class="col_1">
+
+            <div class="col_1_sub">
+                <div class="title_custom width_100">
+                    <h1>
+                        What Sticks
+                      </h1>
+                </div>
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
+                    <div class="paragraph_home">
+                        Download the TestFligh Application and start using
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
+                    <div class="paragraph_home">
+                        Step 1: click on this link: 
+                        <a href="https://testflight.apple.com/join/LHzvgt5g" target="_blank">https://testflight.apple.com/join/LHzvgt5g</a>
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size_bigger flex_center_vertically">
+                    <div class="paragraph_2_columns">
+                        <div>Step 2: Download TestFlight</div>
+                        <a href="#img1">
+                            <img class="img_screen_shot" src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
+                        </a>
+                        
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+
+
+
+
+
+
+
+                <div class="std_frame_light_gray width_100 std_frame_fixed_size flex_center_vertically">
+                    <div class="paragraph_home download_ios">
+                        <a href="{{ url_for('bp_main.download_ios') }}">Download iOS</a>
+                        
+                    </div>
+                </div><!-- std_frame_light_gray -->
+
+
+
+            </div><!-- col_1_sub -->
+        </div><!-- col_1 -->
+
+        <div id="img1" class="lightbox">
+            <a href="#">
+                <img class="img_screen_shot" src="{{ url_for('bp_main.website_images', filename='DownloadTestFlight_arrow.PNG') }}"/>
+            </a>
+        </div>
+    </div><!-- home_page -->
+</div><!-- main_super -->
+
+
+
+
+
+
+{% endblock %}
+
+<script>
+    // Optional: JavaScript to handle closing the lightbox by clicking anywhere
+    document.querySelectorAll('.lightbox').forEach(lightbox => {
+        lightbox.onclick = function() {
+            window.location.hash = '';
+        };
+    });
+</script>
