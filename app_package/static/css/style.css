@@ -856,6 +856,9 @@
   padding: 0.5rem 0;
   color: var(--color_text_dark);
 }
+.download_ios_page .step_1_div_for_big {
+  display: none;
+}
 .download_ios_page .std_frame_sub_register_login {
   padding: 0.5rem 0;
   color: var(--color_text_dark);
@@ -892,13 +895,9 @@
   justify-content: center;
   width: 100%;
 }
-.download_ios_page .std_frame_sub_col_2 a {
-  display: inline-block;
-}
 .download_ios_page .img_screen_shot {
   height: 100%;
   max-width: 10rem;
-  object-fit: contain;
 }
 .download_ios_page .std_frame_download {
   display: flex;
@@ -976,6 +975,12 @@
   }
   .download_ios_page .img_screen_shot {
     max-height: 9rem;
+  }
+  .download_ios_page .step_1_div_for_small {
+    display: none;
+  }
+  .download_ios_page .step_1_div_for_big {
+    display: inline;
   }
 }
 .main_support {
