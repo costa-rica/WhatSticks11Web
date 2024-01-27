@@ -1,8 +1,12 @@
 .home_page {
     display: flex;
-    gap:1rem;
+    // gap:1rem;
     flex-wrap: wrap;
     padding-top:2rem;
+    justify-content: center;
+    align-items: center;
+    // background-color: purple;
+    
     .std_frame_light_gray{
         background-color: var(--color-gray02);
         border-radius: .5rem;
@@ -11,34 +15,37 @@
       }
     .col_1 {
         display:flex;
-        justify-content: center;
-        color:var(--color_text_white);
-        width:100%;
+        flex-wrap: wrap;
+        gap:1rem;
+        width:80%;
+        // background-color: red;
     }
-    .col_1_sub{
-        display:flex;
-        flex-wrap:wrap;
-        width: 80%;
-        gap: 1rem;
-    }
+    // .col_1_sub{
+    //     display:flex;
+    //     flex-wrap:wrap;
+    //     width: 80%;
+    //     // gap: 1rem;
+    // }
     .title_custom{
-        justify-content: center;
-    }
-    .paragraph_home{
-        padding: .5rem 0;
-        color:var(--color_text_dark);
-    }
-    .download_ios a{
-        color: var(--color_theme_blue);
-        text-decoration: none;
-    }
-    .std_frame_fixed_size{
-        height: 6rem;
-    }
-    .flex_center_vertically{
         display:flex;
-        align-items:center;
+        color:var(--color_text_white);
     }
+
+    // .paragraph_home{
+    //     padding: .5rem 0;
+    //     color:var(--color_text_dark);
+    // }
+    // .download_ios a{
+    //     color: var(--color_theme_blue);
+    //     text-decoration: none;
+    // }
+    // .std_frame_fixed_size{
+    //     min-height: 6rem;
+    // }
+    // .flex_center_vertically{
+    //     display:flex;
+    //     align-items:center;
+    // }
 }
 
 .download_ios_page {
@@ -60,8 +67,7 @@
         gap: 1rem;
     }
     .title_custom{
-        width:100%;
-        justify-content: center;
+        display:flex;
     }
     .std_frame_light_gray{
         background-color: var(--color-gray02);
@@ -79,8 +85,9 @@
     }
     .std_frame_sub_2_columns{
         display: flex;
+        flex-wrap: wrap;
         height:100%;
-        width:80%;
+        width:100%;
         justify-content: space-between;
         color:var(--color_text_dark);
     }
@@ -88,33 +95,29 @@
     .std_frame_sub_col_1{
         // background-color: red;
         display:flex;
-        // align-items: center;
         flex-direction: column;
         flex-wrap: wrap;
         justify-content: center;
+        width:100%;
     }
     .std_frame_sub_col_1_main_text{
         width:100%;
     }
     .std_frame_sub_col_1_center_text{
         align-items: center;
-        // background-color: green;
         width:100%;
     }
     .std_frame_sub_col_1_small_text{
-        // padding-top:.5rem;
         font-size: small;
-        padding:.5rem 1rem;
+        padding:.5rem 0rem;
     }
 
     .std_frame_sub_col_2{
         display:flex;
-        justify-content: end;
-        // background-color: red;
-        max-width:10rem;
+        justify-content: center;
+        width:100%;
         a{
             display: inline-block;
-            width:1rem;// <-- only way I found to keep a tag from expanding too wide.
         }
     }
     .img_screen_shot{
@@ -130,13 +133,15 @@
         height: 6rem;
     }
 
-    // .std_frame_download_two_cols{
     .std_frame_download_taller{
         display:flex;
         align-items:center;
         width:100%;
         // max-width:80%;
-        height: 10rem;
+        min-height: 10rem;
+    }
+    .std_frame_last_on_page{
+        height:2rem;
     }
     .lightbox {
         display: none;
@@ -182,9 +187,7 @@
         gap: 1rem;
     }
     .title_custom{
-        width:100%;
-        justify-content: center;
-        // color: white;
+        display:flex;
     }
     .std_frame_light_gray{
         background-color: var(--color-gray02);
@@ -199,189 +202,28 @@
 }
 
 
-/* OLD - Used for Personal Website 02 */
 
-
-
-// .about_page{
-//     display: flex;
-//     gap:1rem;
-//     flex-wrap: wrap;
-//     flex-direction: row-reverse;
-//     .col_1, .col_2 {
-//         display:flex;
-//         justify-content: center;
-//         color:var(--color-gray-text);
-//         width:100%;
-//     }
-//     .col_1_sub, .col_2_sub{
-//         display:flex;
-//         flex-wrap:wrap;
-//         width: 80%;
-//         height:fit-content;
-//         justify-content: center;
-//         // background-color: var(--color_gray_test_01);
-//     }
-//     .div_image_of_me{
-//         // background-color: var(--color_gray_test_01);
-//         width: 100%;
-//         justify-content: center;
-//         display: flex;
-
-//     }
-//     .img_montmarte{
-//         width:60%;
-//         box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-//         border-radius: 0.5rem;
-//     }
-//     .other_contact{
-//         padding:3rem 0;
-//         width:60%;
-//         display:flex;
-//         flex-wrap:wrap;
-//         justify-content: center;
-//         gap:1rem;
-//     }
-//     .s_text_color_yellow{color:var(--color-yellow)}
-//     .div_hi_big{width:100%}
-//     // .div_welcome{
-//     //     width:100%;
-//     //     color: var(--color_gray_test_01)
-//     // }
-//     // .paragraph_home_super{padding-top:5rem;}
-//     .paragraph_home{
-//         padding: .5rem 0;
-//     }
-// }
-
-.resume_page{
-    color:var(--color-gray-text);
-    width:100%;
-    // .div_top_personal_info{
-    //     display: flex;
-    // }
-    .div_name{
-        display: flex;
-        // color:var(--color-gray04);
-        h1{padding-right:3rem;}
-        // a{padding-left:3rem;}
-    
-    }
-    .div_job_title{
-        color:var(--color-gray04);
-    }
-    .div_skills{
-        background-color: var(--color-gray04);
-        border-radius: .3rem;
-        padding:.5rem
-    }
-    .s_text_color_yellow{color:rgb(54, 54, 54)}
-
-    .div_contact_detail_item{
-        display:flex;
-        align-items: center;
-        a {
-            text-decoration: none;
-            color:var(--color-gray-text);
-        }
-        a:hover{
-            color:var(--color-dark);
-            background-color: #d1d1d1;
-            border-radius: 3rem;
-            padding:.25rem .5rem;
-            i{
-                // width:200%;
-                transform: scale(1.5); /* Increase the size by 20% on hover */
-            }
-        }
-    }
-    // .div_contact_detail_item_icon{
-        
-
-    // }
-    .div_contact_detail_item_text{
-        padding-left:.75rem;
-        
-        white-space: nowrap;
-    }
-
-    .div_projects a {
-        color:var(--color-gray04);
-        color:var(--color-dark);
-        // color:var(--color-gray05);
-    }
-    .div_project{padding:1rem 0;}
-    .title{
-        a{
-            text-decoration: none;
-            color:var(--color-yellow)
-        }
-    }
-    .div_project_other_details{
-        a{ text-decoration: none;}
-    }
-    .div_experience{padding:1rem 0}
-    .company_title{font-size: larger;}
-
-}
-
-.about_this_page{
-    display:flex;
-    justify-content: center;
-    color:var(--color-gray-text);
-    padding-top:2rem;
-    .col_1{
-        display:flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        width: 80%;
-        justify-content: center;
-    }
-    .div_hi_big{
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-    .paragraph_home{
-        a{
-            color:var(--color-gray-text)
-        }
-    }
-}
 
 
 @media screen and (min-width: 768px) {
-
     .home_page{
-        padding-top:0;
-        .col_1, .col_2 {
-            flex:1;
-            align-items: center;
+        height: 100vh;
+    }
+    //     //shrink
+    //     // .std_frame_fixed_size{
+    //     //     min-height: none;
+    //     //     background-color: red;
+    //     // }
+    // }
+    .download_ios_page{
+        .std_frame_sub_2_columns{
+            flex-wrap: nowrap;
+        }
+        .img_screen_shot{
+            max-height: 9rem;
         }
     }
 
-    .about_page {
-        justify-content: space-between;
-        flex:1;
-        flex-wrap: nowrap;
-        .col_1, .col_2 {
-            flex:1;
-            align-items: center;
-        }
-    }
-    .resume_page{
-        // padding:3rem;
-        max-width: 70rem;
-        .div_top_personal_info{
-            display: flex;
-            gap:1rem;
-        }
-        .div_company_title_dates, .div_education_sub{
-            display:flex;
-            justify-content: space-between;
-        }
-        .div_education{padding-bottom:5rem;}
-    }
-    .about_this_page{padding-top:0;}
+
 
 }

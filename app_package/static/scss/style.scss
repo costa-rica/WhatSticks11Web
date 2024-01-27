@@ -11,7 +11,7 @@
 
 :root {
     --nav-height: 123px;
-    --nav-width: 300px;
+    --nav-width: 230px;
 
     /* What Sticks Colors */
 
@@ -95,25 +95,24 @@ html body{background-color: var(--color_background_black)}
     white-space: pre-line;
   }
 }
-.main_super{
-  flex-grow: 2; /* or more, to ensure it takes up more space */
-  flex-shrink: 1;
-  flex-basis: auto; /* adjust as needed */
-  padding: .5rem;
-  display:flex;
-  width:100%;
-  justify-content: center;
-}
-// .std_frame_light_gray{
-//   background-color: var(--color-gray02);
-//   border-radius: .5rem;
-//   padding:1rem;
-// }
-// .width_100{
+// .main_super{
+//   flex-grow: 2; /* or more, to ensure it takes up more space */
+//   flex-shrink: 1;
+//   flex-basis: auto; /* adjust as needed */
+//   padding: .5rem;
+//   display:flex;
 //   width:100%;
+//   justify-content: center;
 // }
+#small_screen_logo{
+  padding-left: .5rem;
+  img{
+      width:2rem;
+  }
+}
 
 @media screen and (min-width: 768px) {
+  #small_screen_logo{display:none}
   .div_fixed_nav_and_main {
       display: flex;
       // height: 100vh;  /* Optional: Takes the full height of the viewport */
