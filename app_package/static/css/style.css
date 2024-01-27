@@ -898,6 +898,7 @@
 .download_ios_page .img_screen_shot {
   height: 100%;
   max-width: 6rem;
+  height: auto;
 }
 .download_ios_page .std_frame_download {
   display: flex;
