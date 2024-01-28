@@ -5,13 +5,21 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    // background-color: red;
+    align-items: center;
     .col_1{
-        padding-top:5rem;
+      // display:flex;
+        // padding-top:5rem;
+        // padding: 53
+        padding: .5rem;
+        // background-color: red;
+        // align-items: center;
     }
-    .title {
-      width: 100%;
-      color:var(--color-gray-text-title);
-    }
+    // .col_1_sub{background-color: green;}
+    .title_custom{
+      display:flex;
+      color:var(--color_text_white);
+  }
   
     .login_form {
       border-radius: 1.5em;
@@ -65,12 +73,21 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    // background-color: red;
+    align-items: center;
     .col_1{
-        padding-top:5rem;
+      // display:flex;
+        // padding-top:5rem;
+        // padding: 53
+        padding: .5rem;
+        // background-color: red;
+        // align-items: center;
     }
-    .title {
-      width: 100%;
-    }
+    // .col_1_sub{background-color: green;}
+    .title_custom{
+      display:flex;
+      color:var(--color_text_white);
+  }
   
     .register_form {
       border-radius: 1.5em;
@@ -99,3 +116,9 @@
   
   }
   
+
+  @media screen and (min-width: 768px) {
+    .login_page{
+        height: 100vh;
+    }
+  }

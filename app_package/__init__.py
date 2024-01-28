@@ -61,6 +61,12 @@ def create_app(config_for_flask = config):
     create_folder(config_for_flask.WEBSITE_FILES)
     create_folder(config_for_flask.DIR_WEBSITE_UTILITY_IMAGES)
     ############################################################################
+    ## Build Sqlite database
+    if os.path.exists(os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))):
+        logger_init.info(f"db already exists: {os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))}")
+    else:
+        Base.metadata.create_all(engine)
+        logger_init.info(f"NEW db created: {os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))}")
 
     logger_init.info(f"- DB_ROOT: {config_for_flask.DB_ROOT}")
 

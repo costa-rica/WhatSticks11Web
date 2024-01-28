@@ -54,7 +54,7 @@ def login():
         print(f"formDict: {formDict}")
         email = formDict.get('email')
 
-        user = sess_users.query(Users).filter_by(email=email).first()
+        user = sess.query(Users).filter_by(email=email).first()
 
         # verify password using hash
         password = formDict.get('password')
@@ -63,14 +63,15 @@ def login():
             if password:
                 if bcrypt.checkpw(password.encode(), user.password):
                     login_user(user)
-
-                    return redirect(url_for('bp_blog.blog_user_home'))
+                    flash('Logged in successfully', 'success')
+                    # return redirect(url_for('bp_blog.blog_user_home'))
+                    return redirect(url_for('bp_main.home'))
                 else:
                     flash('Password or email incorrectly entered', 'warning')
             else:
                 flash('Must enter password', 'warning')
         # elif formDict.get('btn_login_as_guest'):
-        #     user = sess_users.query(Users).filter_by(id=2).first()
+        #     user = sess.query(Users).filter_by(id=2).first()
         #     login_user(user)
 
         #     return redirect(url_for('dash.dashboard', dash_dependent_var='steps'))
@@ -89,7 +90,7 @@ def register():
         formDict = request.form.to_dict()
         new_email = formDict.get('email')
 
-        check_email = sess_users.query(Users).filter_by(email = new_email).all()
+        check_email = sess.query(Users).filter_by(email = new_email).all()
 
         logger_bp_users.info(f"check_email: {check_email}")
 
@@ -99,14 +100,8 @@ def register():
 
         hash_pw = bcrypt.hashpw(formDict.get('password').encode(), salt)
         new_user = Users(email = new_email, password = hash_pw)
-        sess_users.add(new_user)
-        sess_users.commit()
-
-        # # /check_invite_json
-        # headers = {'Content-Type': 'application/json'}
-        # payload={}
-        # payload['TR_VERIFICATION_PASSWORD']=current_app.config.get("TR_VERIFICATION_PASSWORD")
-        # result = requests.request('POST',current_app.config.get("API_URL") + "/check_invite_json",headers= headers, data=str(json.dumps(payload)))
+        sess.add(new_user)
+        sess.commit()
 
         # Send email confirming succesfull registration
         try:
@@ -139,7 +134,7 @@ def reset_password():
     if request.method == 'POST':
         formDict = request.form.to_dict()
         email = formDict.get('email')
-        user = sess_users.query(Users).filter_by(email=email).first()
+        user = sess.query(Users).filter_by(email=email).first()
         if user:
         # send_reset_email(user)
             logger_bp_users.info('Email reaquested to reset: ', email)

@@ -105,12 +105,8 @@
   padding-right: 1rem;
 }
 
-.li_manage_blogpost a {
-  color: var(--color-yellow);
-}
-
-.li_manage_blogpost_font {
-  font-size: large;
+.li_logged_in a {
+  color: var(--color_theme_yellow);
 }
 
 #overlay {
@@ -312,13 +308,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .login_page .col_1 {
-  padding-top: 5rem;
+  padding: 0.5rem;
 }
-.login_page .title {
-  width: 100%;
-  color: var(--color-gray-text-title);
+.login_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
 }
 .login_page .login_form {
   border-radius: 1.5em;
@@ -360,12 +357,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .register_page .col_1 {
-  padding-top: 5rem;
+  padding: 0.5rem;
 }
-.register_page .title {
-  width: 100%;
+.register_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
 }
 .register_page .register_form {
   border-radius: 1.5em;
@@ -390,6 +389,11 @@
   float: right;
 }
 
+@media screen and (min-width: 768px) {
+  .login_page {
+    height: 100vh;
+  }
+}
 /* View Post */
 .view_post_page {
   display: flex;
@@ -1071,6 +1075,156 @@
     max-width: 10rem;
   }
 }
+/* Admin Page */
+.admin_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.admin_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.admin_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.admin_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+}
+.admin_page .std_frame_sub {
+  padding: 0.5rem 0;
+  color: var(--color_text_dark);
+}
+.admin_page .home_buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  width: 100%;
+}
+.admin_page .div_button {
+  padding: 1rem 0 1rem 0;
+  width: 100%;
+  border-radius: 3rem;
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+.admin_page .home_register {
+  background-color: var(--bs-primary);
+  border: solid var(--bs-primary);
+  border-width: 0.5rem;
+  color: var(--bs-gray-200);
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+.admin_page .home_login {
+  color: var(--bs-primary);
+  border: solid var(--bs-primary);
+  border-width: 0.5rem;
+  text-decoration: none;
+}
+
+/* Admin Db Download Page */
+.admin_db_download_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.admin_db_download_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.admin_db_download_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.admin_db_download_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+  width: 100%;
+}
+.admin_db_download_page .std_frame_sub {
+  padding: 0.5rem 0;
+  color: var(--color_text_dark);
+}
+
+/* Admin Db UPload Page */
+.admin_db_upload_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.admin_db_upload_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.admin_db_upload_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.admin_db_upload_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+  width: 100%;
+}
+.admin_db_upload_page .std_frame_sub {
+  padding: 0.5rem 0;
+  color: var(--color_text_dark);
+}
+
+.admin_db_upload_table_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.admin_db_upload_table_page .section_div {
+  padding: 1rem 0rem;
+}
+.admin_db_upload_table_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.admin_db_upload_table_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.admin_db_upload_table_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+  width: 100%;
+}
+.admin_db_upload_table_page .std_frame_sub {
+  padding: 0.5rem 0;
+  color: var(--color_text_dark);
+}
+
 :root {
   --nav-height: 123px;
   --nav-width: 230px;

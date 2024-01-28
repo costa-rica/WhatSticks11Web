@@ -119,7 +119,7 @@ def blog_user_home():
     #check, create directories between db/ and static/
     # word_docs_dir_util()
 
-    all_my_posts=sess_users.query(BlogPosts).filter_by(user_id=current_user.id).all()
+    all_my_posts=sess.query(BlogPosts).filter_by(user_id=current_user.id).all()
     # print(all_posts)
     posts_details_list=[]
     for i in all_my_posts:
@@ -422,7 +422,7 @@ def blog_edit(post_id):
     if not current_user.is_authenticated:
         return redirect(url_for('main.home'))
 
-    post = sess_users.query(BlogPosts).filter_by(id = post_id).first()
+    post = sess.query(BlogPosts).filter_by(id = post_id).first()
     title = post.title
     description = post.description
     post_time_stamp_utc = post.time_stamp_utc.strftime("%Y-%m-%d")
@@ -461,7 +461,7 @@ def blog_edit(post_id):
 @bp_blog.route("/delete/<post_id>", methods=['GET','POST'])
 @login_required
 def blog_delete(post_id):
-    post_to_delete = sess_users.query(BlogPosts).get(int(post_id))
+    post_to_delete = sess.query(BlogPosts).get(int(post_id))
 
     print("where did the reqeust come from: ", request.referrer)
     print("-------------------------------------------------")
@@ -483,7 +483,7 @@ def blog_delete(post_id):
         logger_bp_blog.info(f'No {blog_dir_for_delete} in static folder')
 
     # delete from database
-    sess_users.query(BlogPosts).filter(BlogPosts.id==post_id).delete()
+    sess.query(BlogPosts).filter(BlogPosts.id==post_id).delete()
     sess_users.commit()
     print(' request.referrer[len("create_post")*-1: ]:::', request.referrer[len("create_post")*-1: ])
     if request.referrer[len("create_post")*-1: ] == "create_post":

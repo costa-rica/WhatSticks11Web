@@ -59,7 +59,10 @@ def send_reset_email(user):
     msg.body = f'''To reset your password, visit the following link:
 {url_for('bp_users.reset_token', token=token, _external=True)}
 
-If you did not make this request, ignore email and there will be no change
+If you did not make this request, ignore email and there will be no change.
+
+-Nick
+What Sticks
 '''
 
     mail.send(msg)
@@ -68,7 +71,7 @@ If you did not make this request, ignore email and there will be no change
 def send_confirm_email(email):
     if os.environ.get('CONFIG_TYPE') == 'prod':
         logger_main.info(f"-- sending email to {email} --")
-        msg = Message('Welcome to Dashboards and Databases',
+        msg = Message('Welcome to What Sticks',
             sender=current_app.config.get('MAIL_USERNAME'),
             recipients=[email])
         msg.body = 'You have succesfully signed up.'

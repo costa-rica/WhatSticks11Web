@@ -30,7 +30,7 @@ logger_bp_blog.addHandler(stream_handler)
 
 def create_blog_posts_list(number_of_posts_to_return=False):
     #Blog
-    blog_posts = sess_users.query(BlogPosts).all()
+    blog_posts = sess.query(BlogPosts).all()
 
     blog_posts_list =[]
     for post in blog_posts:
