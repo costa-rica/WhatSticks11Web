@@ -1,124 +1,177 @@
-
-
 /* Login Page */
 .login_page {
-    width: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  // background-color: red;
+  align-items: center;
+
+  .col_1 {
+    // display:flex;
+    // padding-top:5rem;
+    // padding: 53
+    padding: .5rem;
+    // background-color: red;
+    // align-items: center;
+  }
+
+  // .col_1_sub{background-color: green;}
+  .title_custom {
+    display: flex;
+    color: var(--color_text_white);
+  }
+
+  .login_form {
+    border-radius: 1.5em;
+    padding: 3rem;
+    width: calc(100% - .5rem);
+    font-size: 1.5em;
+    background-color: var(--color-gray03);
     display: flex;
     justify-content: center;
-    // background-color: red;
-    align-items: center;
-    .col_1{
-      // display:flex;
-        // padding-top:5rem;
-        // padding: 53
-        padding: .5rem;
-        // background-color: red;
-        // align-items: center;
-    }
-    // .col_1_sub{background-color: green;}
-    .title_custom{
-      display:flex;
-      color:var(--color_text_white);
-  }
-  
-    .login_form {
-      border-radius: 1.5em;
-      padding: 3rem;
-      width: calc(100% - .5rem);
-      font-size: 1.5em;
-      background-color: var(--color-gray03);
-      display:flex;
-      justify-content: center;
-  
-      .login_form_sub{
-        width: calc(100% - 1rem);
-      }
-  
-      .email_form,
-      .password_form {
-        input {
-          width: 100%
-        }
-  
-        // .register_text{width:100%}
-      }
-  
-      .element_right {
-        float: right;
-        padding-bottom: 2rem;
-      }
-  
-      .show_password {
-        padding: 1rem 1rem;
-      }
-  
-      .element_right_sub {
-        // padding: 1rem 1rem;
-        float: right;
-      }
-  
-      .forgot_password {
-        font-size: 1rem;
-        padding-top: 1rem;
-      }
-      .not_registered {
-        font-size: 1rem;
-        padding-top: .5rem;
-      }
-    }
-  }
-  
-  /* Register Page */
-  .register_page {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    // background-color: red;
-    align-items: center;
-    .col_1{
-      // display:flex;
-        // padding-top:5rem;
-        // padding: 53
-        padding: .5rem;
-        // background-color: red;
-        // align-items: center;
-    }
-    // .col_1_sub{background-color: green;}
-    .title_custom{
-      display:flex;
-      color:var(--color_text_white);
-  }
-  
-    .register_form {
-      border-radius: 1.5em;
-      padding: 3rem;
-      width: calc(100% - .5rem);
-      font-size: 1.5em;
-      background-color: var(--color-gray03);
-      display:flex;
-      justify-content: center;
-    }
-    .register_form_sub{
+
+    .login_form_sub {
       width: calc(100% - 1rem);
     }
-    .register_text{
-      width: 100%;
-    }
-    .submit_form_group{
-    float:right;
-    padding:1rem 1rem 0 0;
-    }
-  
-    .element_right {
-      float:right;
-    }
-  
-  
-  }
-  
 
-  @media screen and (min-width: 768px) {
-    .login_page{
-        height: 100vh;
+    .email_form,
+    .password_form {
+      input {
+        width: 100%
+      }
+
+      // .register_text{width:100%}
+    }
+
+    .element_right {
+      float: right;
+      padding-bottom: 2rem;
+    }
+
+    .show_password {
+      padding: 1rem 1rem;
+    }
+
+    .element_right_sub {
+      // padding: 1rem 1rem;
+      float: right;
+    }
+
+    .forgot_password {
+      font-size: 1rem;
+      padding-top: 1rem;
+    }
+
+    .not_registered {
+      font-size: 1rem;
+      padding-top: .5rem;
     }
   }
+}
+
+/* Register Page */
+.register_page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  // background-color: red;
+  align-items: center;
+
+  .col_1 {
+    // display:flex;
+    // padding-top:5rem;
+    // padding: 53
+    padding: .5rem;
+    // background-color: red;
+    // align-items: center;
+  }
+
+  // .col_1_sub{background-color: green;}
+  .title_custom {
+    display: flex;
+    color: var(--color_text_white);
+  }
+
+  .register_form {
+    border-radius: 1.5em;
+    padding: 3rem;
+    width: calc(100% - .5rem);
+    font-size: 1.5em;
+    background-color: var(--color-gray03);
+    display: flex;
+    justify-content: center;
+  }
+
+  .register_form_sub {
+    width: calc(100% - 1rem);
+  }
+
+  .register_text {
+    width: 100%;
+  }
+
+  .submit_form_group {
+    float: right;
+    padding: 1rem 1rem 0 0;
+  }
+
+  .element_right {
+    float: right;
+  }
+
+
+}
+
+.password_reset_page {
+  // width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .col_1 {
+    padding: .5rem;
+    width:80%;
+  }
+  .title_custom {
+    display: flex;
+    color: var(--color_text_white);
+  }
+  .std_frame_light_gray{
+    background-color: var(--color-gray02);
+    border-radius: .5rem;
+    padding:1rem;
+    width:100%;
+  }
+  .email_input, .password_input{
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    padding-bottom:2rem;
+    input{width:100%}
+  }
+
+  // #password_text{
+  //   width:90%;
+  //   // background-color: red;
+  // }
+  .bottom_element{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    .password_checkbox{
+      display:flex;
+      justify-content: end;
+      font-size: medium;
+      width:100%;
+    }
+  }
+}
+
+
+@media screen and (min-width: 768px) {
+  .login_page {
+    height: 100vh;
+  }
+  .password_reset_page{
+    height: 100vh;
+}
+}

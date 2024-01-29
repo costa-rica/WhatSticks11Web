@@ -389,8 +389,51 @@
   float: right;
 }
 
+.password_reset_page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.password_reset_page .col_1 {
+  padding: 0.5rem;
+  width: 80%;
+}
+.password_reset_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+}
+.password_reset_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.password_reset_page .email_input, .password_reset_page .password_input {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+.password_reset_page .email_input input, .password_reset_page .password_input input {
+  width: 100%;
+}
+.password_reset_page .bottom_element {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+}
+.password_reset_page .bottom_element .password_checkbox {
+  display: flex;
+  justify-content: end;
+  font-size: medium;
+  width: 100%;
+}
+
 @media screen and (min-width: 768px) {
   .login_page {
+    height: 100vh;
+  }
+  .password_reset_page {
     height: 100vh;
   }
 }

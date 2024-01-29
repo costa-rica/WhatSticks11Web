@@ -1,63 +1,83 @@
 {% extends "_layout.html" %}
 {% block main %}
+<form method="POST" id="form_1"></form>
+
+
 <!-- <div class="main"> -->
-  <div class="space_for_navbar_and_footer flex_center">
-  <div class="register_page_super">
-    <div class = "register_page">
-      <div class = "title">
-        <h1>{{ page_name }}</h1>
+<!-- <div class="space_for_navbar_and_footer flex_center"> -->
+<div class="password_reset_page">
+
+  <div class="col_1">
+
+    <div class="title_custom">
+      <h1>{{ page_name }}</h1>
+      <div id="small_screen_logo">
+        <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}" />
       </div>
-  
-      <div class="register_form">
-        <form method="POST" action="">
-          
-          {% if page_name == 'Request Password Change' %}
-          <label for="email">Email:</label>
-          <input type="text" id="email" name="email" class="register_text"><br><br>
-          {% else %}
-          <label for="password">Password:</label>
-          <input type="password" id="password_text" name="password_text" class="register_text"><br><br>
-          {% endif %}
-          
-          <div class="element_right">
-              {% if page_name == 'Request Password Change' %}
-            <input type="submit" value="Submit" class="btn btn-secondary btn_custom01">
-            {% else %}
-            <input type="submit" value="Update" class="btn btn-secondary btn_custom01">
-  
-            <input class="form-check-input" type="checkbox" value="" id="password_checkbox">
-            <label class="form-check-label" for="password_checkbox">
-              Show password
-            </label>
-  
-            {% endif %}
-  
-          </div>
-          
-        </form>
-  
-      </div>
-      
     </div>
-  </div>
 
 
-</div>
+
+    <div class="std_frame_light_gray">
+      <!-- <form method="POST" action=""> -->
+        <div class="password_reset_sub">
+          {% if page_name == 'Request Password Change' %}
+          <div class="email_input">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" class="register_text" form="form_1">
+          </div>
+
+          {% else %}
+          <div class="password_input">
+            <label for="password">Password:</label>
+            <input type="password" id="password_text" name="password_text" class="register_text" form="form_1">
+          </div>
+
+          {% endif %}
+    
+          <div class="bottom_element">
+            {% if page_name == 'Request Password Change' %}
+            <input type="submit" value="Submit" class="btn btn-secondary btn_custom01" form="form_1">
+            {% else %}
+            
+            <div class="password_checkbox">
+              <input class="form-check-input" type="checkbox" value="" id="password_checkbox" form="form_1">
+              <label class="form-check-label" for="password_checkbox">Show password</label>
+            </div>
+
+
+
+              <input type="submit" value="Update" class="btn btn-secondary " form="form_1">
+
+    
+            {% endif %}
+            </div><!-- bottom_element -->
+        </div><!-- password_reset_sub -->
+
+
+      </div><!-- password_reset_form-->
+
+      <!-- </form> -->
+
+
+  </div><!-- col 1-->
+</div><!-- password_reset_page -->
+
 
 <!-- Show password -->
 <script>
-    window.addEventListener("load", function(){
-        var checkbox  = document.getElementById('password_checkbox');
-        var x = document.getElementById('password_text');
-        checkbox.addEventListener('change', function() {
-            if(this.checked) {
-                x.type = 'text'; 
-            } else {
-                x.type = 'password'; 
-            }
-        });
+  window.addEventListener("load", function () {
+    var checkbox = document.getElementById('password_checkbox');
+    var x = document.getElementById('password_text');
+    checkbox.addEventListener('change', function () {
+      if (this.checked) {
+        x.type = 'text';
+      } else {
+        x.type = 'password';
+      }
     });
-  </script>
+  });
+</script>
 
 
 

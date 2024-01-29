@@ -128,7 +128,7 @@ def logout():
 def reset_password():
     page_name = 'Request Password Change'
     if current_user.is_authenticated:
-        return redirect(url_for('bp_main.user_home'))
+        return redirect(url_for('bp_main.home'))
     # form = RequestResetForm()
     # if form.validate_on_submit():
     if request.method == 'POST':
@@ -162,14 +162,14 @@ def reset_token(token):
         if formDict.get('password_text') != '':
             hash_pw = bcrypt.hashpw(formDict.get('password_text').encode(), salt)
             user.password = hash_pw
-            sess_users.commit()
+            sess.commit()
             flash('Password successfully updated', 'info')
             return redirect(url_for('bp_users.login'))
         else:
             flash('Must enter non-empty password', 'warning')
             return redirect(url_for('bp_users.reset_token', token=token))
 
-    return render_template('users/reset_request.html', page_name='Reset Password')
+    return render_template('users/reset_request.html', page_name='Enter New Password')
 
 
 # ########################
