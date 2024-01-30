@@ -1014,6 +1014,33 @@
   color: var(--color_text_dark);
 }
 
+.privacy_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.privacy_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.privacy_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.privacy_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+}
+.privacy_page .paragraph_privacy {
+  color: var(--color_text_white);
+}
+
 @media screen and (min-width: 768px) {
   .home_page {
     height: 100vh;
@@ -1332,6 +1359,11 @@ html body {
 }
 #small_screen_logo img {
   width: 2rem;
+}
+
+.execess_space {
+  width: 100%;
+  padding: 2rem;
 }
 
 @media screen and (min-width: 768px) {

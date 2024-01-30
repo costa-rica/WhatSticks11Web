@@ -111,6 +111,10 @@ html body{background-color: var(--color_background_black)}
       width:2rem;
   }
 }
+.execess_space{
+  width:100%;
+  padding: 2rem;
+}
 
 @media screen and (min-width: 768px) {
   #small_screen_logo{display:none}

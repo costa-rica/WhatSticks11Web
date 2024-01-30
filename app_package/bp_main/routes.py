@@ -39,9 +39,14 @@ def download_ios():
 @bp_main.route("/about", methods=["GET","POST"])
 def about():
     logger_bp_main.info(f"-- in about page route --")
-
     return render_template('main/about.html')
 
+
+
+@bp_main.route('/privacy', methods = ['GET', 'POST'])
+def privacy():
+    logger_bp_main.info(f"-- in privacy page route --")
+    return render_template('main/privacy.html')
 
 
 # Website Files static data
