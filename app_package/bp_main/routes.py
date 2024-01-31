@@ -48,6 +48,11 @@ def privacy():
     logger_bp_main.info(f"-- in privacy page route --")
     return render_template('main/privacy.html')
 
+@bp_main.route('/what_sticks_video/<filename>', methods = ['GET', 'POST'])
+def what_sticks_video(filename):
+    logger_bp_main.info(f"-- in privacy page route --")
+    return render_template('main/video_page.html', filename=filename)
+
 
 # Website Files static data
 @bp_main.route('/website_images/<filename>')
@@ -56,6 +61,14 @@ def website_images(filename):
     print(f"Path to image file: {current_app.config.get('DIR_WEBSITE_UTILITY_IMAGES')}")
     print(f"image filename: {filename}")
     return send_from_directory(current_app.config.get('DIR_WEBSITE_UTILITY_IMAGES'), filename)
+
+# Website Videos static data
+@bp_main.route('/website_videos/<filename>')
+def website_videos(filename):
+    print("-- entered website_videos -")
+    print(f"Path to image file: {current_app.config.get('DIR_WEBSITE_VIDEOS')}")
+    print(f"image filename: {filename}")
+    return send_from_directory(current_app.config.get('DIR_WEBSITE_VIDEOS'), filename)
 
 @bp_main.route('/website_images_favicon/<filename>')
 def website_images_favicon(filename):

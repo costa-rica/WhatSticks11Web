@@ -1041,6 +1041,15 @@
   color: var(--color_text_white);
 }
 
+.video_page .video-container {
+  width: 100%;
+  max-width: 480px; /* Optimized for mobile devices */
+}
+.video_page video {
+  width: 100%;
+  height: auto;
+}
+
 @media screen and (min-width: 768px) {
   .home_page {
     height: 100vh;

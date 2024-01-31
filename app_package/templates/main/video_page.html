@@ -1,0 +1,20 @@
+{% extends "_layout.html" %}
+{% block main %}
+
+<!-- <div class="main_super"> -->
+
+    <div class="video_page">
+        <div class="col_1">
+
+            <div class="video-container">
+                <video controls>
+                    <source src="{{ url_for('bp_main.website_videos', filename=filename)}}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+        </div><!-- col_1 -->
+    </div><!-- video_page -->
+<!-- </div>main_super -->
+
+{% endblock %}
