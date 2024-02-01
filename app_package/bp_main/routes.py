@@ -32,7 +32,14 @@ def home():
 @bp_main.route("/download_ios", methods=["GET","POST"])
 def download_ios():
     logger_bp_main.info(f"-- in download_ios route --")
-    download_test_flight_link = "https://testflight.apple.com/join/ZXNq4c8s"
+    # download_test_flight_link = "https://testflight.apple.com/join/ZXNq4c8s"
+    try:
+        with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'r') as file:
+            download_test_flight_link = file.read().strip()  # .strip() removes any leading/trailing whitespace
+    
+    except:
+        download_test_flight_link="https://testflight.apple.com/join/LHzvgt5g"
+
     return render_template('main/download_ios.html', download_test_flight_link=download_test_flight_link)
 
 
