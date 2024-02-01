@@ -32,8 +32,8 @@ def home():
 @bp_main.route("/download_ios", methods=["GET","POST"])
 def download_ios():
     logger_bp_main.info(f"-- in download_ios route --")
-
-    return render_template('main/download_ios.html')
+    download_test_flight_link = "https://testflight.apple.com/join/ZXNq4c8s"
+    return render_template('main/download_ios.html', download_test_flight_link=download_test_flight_link)
 
 
 @bp_main.route("/about", methods=["GET","POST"])
