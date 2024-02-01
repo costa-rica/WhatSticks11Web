@@ -42,13 +42,10 @@ def download_ios():
 
     return render_template('main/download_ios.html', download_test_flight_link=download_test_flight_link)
 
-
 @bp_main.route("/about", methods=["GET","POST"])
 def about():
     logger_bp_main.info(f"-- in about page route --")
     return render_template('main/about.html')
-
-
 
 @bp_main.route('/privacy', methods = ['GET', 'POST'])
 def privacy():
@@ -59,7 +56,6 @@ def privacy():
 def what_sticks_video(filename):
     logger_bp_main.info(f"-- in privacy page route --")
     return render_template('main/video_page.html', filename=filename)
-
 
 # Website Files static data
 @bp_main.route('/website_images/<filename>')
@@ -84,9 +80,13 @@ def website_images_favicon(filename):
     print(f"image filename: {filename}")
     return send_from_directory(os.path.join(current_app.config.get('DIR_WEBSITE_UTILITY_IMAGES'),"Favicon"), filename)
 
-
 @bp_main.route('/favicon_ico')
 def favicon_ico():
     print("--- ** Favicon() ** ----")
     return send_from_directory(current_app.config.get('DIR_WEBSITE_UTILITY_IMAGES'),
                                'Favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@bp_main.route('/robots.txt')
+def robots_txt():
+    # return send_from_directory(app.static_folder, 'robots.txt')
+    return send_from_directory(current_app.config.get('WEBSITE_FILES'), 'robots.txt')
