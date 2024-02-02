@@ -1,7 +1,8 @@
 
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
-    abort, session, Response, current_app, send_from_directory, make_response
+    abort, session, Response, current_app, send_from_directory, make_response, \
+    send_file
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
 import logging
@@ -10,10 +11,11 @@ import os
 import json
 from ws_models import sess, engine, text, Users
 
-from app_package.bp_users.utils import send_reset_email, send_confirm_email
+from app_package.bp_users.utils import send_reset_email, send_confirm_email, \
+    create_shortname_list
 import datetime
 import requests
-# from app_package import secure_headers
+import zipfile
 
 #Setting up Logger
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
@@ -65,7 +67,7 @@ def login():
                     login_user(user)
                     flash('Logged in successfully', 'success')
                     # return redirect(url_for('bp_blog.blog_user_home'))
-                    return redirect(url_for('bp_main.home'))
+                    return redirect(url_for('bp_users.user_home'))
                 else:
                     flash('Password or email incorrectly entered', 'warning')
             else:
@@ -171,7 +173,46 @@ def reset_token(token):
 
     return render_template('users/reset_request.html', page_name='Enter New Password')
 
+@bp_users.route('/user_home', methods = ['GET', 'POST'])
+@login_required
+def user_home():
+    logger_bp_users.info("- accessed user_home -")
+    user_file_prefix = f"user_{current_user.id:04}_df"
+    user_files_list = [ i for i in os.listdir(current_app.config.get('DAILY_CSV')) if user_file_prefix in i ]
+    user_files_list_shortname = create_shortname_list(user_files_list, current_user.id)
+    
+    if request.method == 'POST':
+        # Get the directory where the CSV files are stored
+        csv_directory = current_app.config.get('DAILY_CSV')
 
+        # Define the zip file name based on the current user's ID
+        zip_file_name = f"user_{current_user.id:04}_files.zip"
+        zip_file_path = os.path.join(csv_directory, zip_file_name)
+
+        # Create a zip file in write mode
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            # Loop through each file in the directory
+            for folder_name, subfolders, filenames in os.walk(csv_directory):
+                for filename in filenames:
+                    # Check if the current file is in the user's file list
+                    if filename in user_files_list:
+                        # Create the full path to the file
+                        file_path = os.path.join(folder_name, filename)
+                        # Add the file to the zip archive
+                        zipf.write(file_path, os.path.relpath(file_path, csv_directory))
+    
+        # After zipping, send the file to the client
+        # return send_file(zip_file_path, as_attachment=True, attachment_filename=zip_file_name)
+        return send_file(zip_file_path, as_attachment=True)
+
+    return render_template('users/user_home.html', user_files_list=user_files_list, len=len,
+        user_files_list_shortname=user_files_list_shortname, zip=zip)
+
+# User Files static data
+@bp_users.route('/user_file/<filename>')
+@login_required
+def user_file(filename):
+    return send_from_directory(current_app.config.get('DAILY_CSV'), filename)
 
 
 

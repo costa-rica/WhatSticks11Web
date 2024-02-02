@@ -81,3 +81,17 @@ def send_confirm_email(email):
         logger_main.info(f"-- Non prod mode, no email sent --")
 
 
+def create_shortname_list(user_files_list, user_id):
+    # Define the prefixes to remove
+    prefix_to_remove_1 = f"user_{user_id:04}_df_"
+    prefix_to_remove_2 = f"user_{user_id:04}_df_daily_"
+    suffix_to_remove = ".csv"
+    
+    # Create the new list with shortnames
+    user_files_list_shortname = [
+        filename.replace(prefix_to_remove_2, '').replace(prefix_to_remove_1, '').replace(suffix_to_remove, '')
+        for filename in user_files_list
+    ]
+    
+    return user_files_list_shortname
+
