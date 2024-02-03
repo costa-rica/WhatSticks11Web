@@ -55,6 +55,10 @@ def privacy():
 @bp_main.route('/what_sticks_video/<filename>', methods = ['GET', 'POST'])
 def what_sticks_video(filename):
     logger_bp_main.info(f"-- in privacy page route --")
+
+    if filename == "SleepTime20240130_shortDrawings.mp4":
+        filename = "SleepTime_v03.mp4"
+
     return render_template('main/video_page.html', filename=filename)
 
 # Website Files static data

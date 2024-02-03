@@ -5,13 +5,22 @@
 
     <div class="video_page">
         <div class="col_1">
-
+            {% if filename == "SleepTime20240130_shortDrawings.mp4" %}
+            <!-- Only keep this while waiting on Apple App Store Response -->
             <div class="video-container">
-                <video controls>
+                <video controls>                   
+                    <source src="{{ url_for('bp_main.website_videos', filename='SleepTime_v03.mp4')}}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% else %}
+            <div class="video-container">
+                <video controls>                   
                     <source src="{{ url_for('bp_main.website_videos', filename=filename)}}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
+            {% endif %}
 
         </div><!-- col_1 -->
     </div><!-- video_page -->
