@@ -1,7 +1,6 @@
 {% extends "_layout.html" %}
 {% block main %}
-<form method="POST" id="form_1" enctype="multipart/form-data"></form>
-<form method="POST" id="form_2"></form>
+<form method="POST" id="form_1" ></form>
 
 
 
@@ -41,17 +40,30 @@
         </div><!-- std_frame_light_gray -->
 
         <div class="std_frame_light_gray ">
+            <h3>Add Beta link</h3>
+            <div class="div_test_flight_link">
+                <label for="input_test_flight_link">Link to TestFlight:</label>
+                <!-- input type="text" id="email" name="email" form="form_1" -->
+                <input type="text" id="input_test_flight_link" name="input_test_flight_link" form="form_1" value="{{ test_flight_link }}">
+              </div>
+              <div class="element_right">
+                <button class="btn btn-secondary " form="form_1" name="add_link">Update Link</button>
+              </div>
+              
+        </div>
+
+
+
+
+        <div class="std_frame_light_gray ">
             <h2>Users</h2>
             {% for i,j in users_list.items() %}
             <ul class="ul_no_bullets">
-                {% if j=='add privilege' %}
-                <li>{{ i +'(' + j +')'}}</li>
 
-                {% else %}
-                <li>{{ i }} <a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=i) }}"
-                        style="display: inline;">&#215;</a></li>
+                <li>{{ i +" (admin_users_permission: " + str(j) +")" }}  <a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=i) }}"
+                    style="display: inline;">&#215;</a></li>
 
-                {% endif %}
+
             </ul>
             {% endfor %}
         </div>

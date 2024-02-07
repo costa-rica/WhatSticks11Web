@@ -33,19 +33,28 @@ def home():
 def download_ios():
     logger_bp_main.info(f"-- in download_ios route --")
     # download_test_flight_link = "https://testflight.apple.com/join/ZXNq4c8s"
-    try:
-        with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'r') as file:
-            download_test_flight_link = file.read().strip()  # .strip() removes any leading/trailing whitespace
+    # try:
+    with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'r') as file:
+        download_test_flight_link = file.read().strip()  # .strip() removes any leading/trailing whitespace
     
-    except:
-        download_test_flight_link="https://testflight.apple.com/join/LHzvgt5g"
+    # except:
+    #     download_test_flight_link="https://testflight.apple.com/join/LHzvgt5g"
 
     return render_template('main/download_ios.html', download_test_flight_link=download_test_flight_link)
 
 @bp_main.route("/about", methods=["GET","POST"])
 def about():
     logger_bp_main.info(f"-- in about page route --")
-    return render_template('main/about.html')
+
+    test_flight_link = ""
+
+    try:
+        with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'r') as file:
+            test_flight_link = file.read().strip()  # .strip() removes any leading/trailing whitespace
+    except FileNotFoundError:
+        logger_bp_main.info(f"- no TestFlight Link found")
+
+    return render_template('main/about.html', test_flight_link=test_flight_link)
 
 @bp_main.route('/privacy', methods = ['GET', 'POST'])
 def privacy():

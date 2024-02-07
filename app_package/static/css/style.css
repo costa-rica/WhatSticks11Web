@@ -1013,6 +1013,13 @@
   padding: 0.5rem 0;
   color: var(--color_text_dark);
 }
+.about_page .element_padding {
+  width: 100%;
+  padding: 1rem 0 1rem 3rem;
+}
+.about_page .element_padding a i {
+  padding-right: 0.5rem;
+}
 
 .privacy_page {
   display: flex;
@@ -1241,6 +1248,9 @@
   padding: 0.5rem 0;
   color: var(--color_text_dark);
 }
+.admin_page .div_test_flight_link input {
+  width: 100%;
+}
 .admin_page .home_buttons {
   display: flex;
   justify-content: center;
@@ -1269,6 +1279,12 @@
   border: solid var(--bs-primary);
   border-width: 0.5rem;
   text-decoration: none;
+}
+.admin_page .element_right {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  padding-top: 1rem;
 }
 
 /* Admin Db Download Page */

@@ -41,6 +41,17 @@
                         </ul>
                     </div>
                 </div><!-- std_frame_light_gray -->
+                {% if test_flight_link[:8] == 'https://' %}
+                <div class="std_frame_light_gray std_frame_download">
+                    <div class="std_frame_sub">
+                        <h3>Latest Beta Version</h3>
+                        <div class="element_padding">
+                            <a href="{{ url_for('bp_main.download_ios') }}"><i class="fa-solid fa-download"></i>Download iOS</a>
+                        </div>
+                        
+                    </div>
+                </div><!-- std_frame_light_gray -->
+                {% endif %}
 
                 <div class="std_frame_light_gray std_frame_download">
                     <div class="std_frame_sub">
@@ -49,7 +60,7 @@
                 </div><!-- std_frame_light_gray -->
 
 
-
+                <div class="excess_space"></div>
 
             </div><!-- col_1_sub -->
         </div><!-- col_1 -->

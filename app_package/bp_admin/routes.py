@@ -62,34 +62,28 @@ def before_request():
 @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
 @login_required
 def admin_page():
-    # users_list=[i.email for i in sess.query(Users).all()]
     users_list=[i.username for i in sess.query(Users).all()]
     users_dict={i.username:i.admin_users_permission for i in sess.query(Users).all()}
-    
-    # with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
-    #     get_users_dict=json.load(json_file)
-    #     json_file.close()
-    # get_users_list=list(get_users.keys())
-    # users_dict = {}
-    # for username in users_list:
+    test_flight_link = ""
 
+    try:
+        with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'r') as file:
+            test_flight_link = file.read().strip()  # .strip() removes any leading/trailing whitespace
+    except FileNotFoundError:
+        logger_bp_admin.info(f"- no TestFlight Link found")
 
     if request.method == 'POST':
         formDict = request.form.to_dict()
         print('formDict:::', formDict)
-        # if formDict.get('add_privilege'):
-            
-        #     get_users_dict[formDict.get('add_user')]='add privilege'
-        # else:
-        #     get_users_dict[formDict.get('add_user')]='no add privileges'
-        
-        # added_users_file=os.path.join(current_app.config['DIR_DB_FILES_UTILITY'], 'added_users.txt')
-        # with open(added_users_file, 'w') as json_file:
-        #     json.dump(get_users_dict, json_file)
-        
-        return redirect(url_for('users.admin'))
-    # return render_template('admin/admin.html', users_list=get_users_dict)
-    return render_template('admin/admin.html', users_list=users_dict)
+        if formDict.get('input_test_flight_link')[:8]=="https://":
+            with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'w') as file:
+                file.write(formDict.get('input_test_flight_link'))
+            flash(f'Updated TestFlight link', 'success')
+        else:
+            flash(f'TestFlight link must be a valid https url', 'warning')
+        return redirect(url_for('bp_admin.admin_page'))
+    return render_template('admin/admin.html', users_list=users_dict, 
+        test_flight_link=test_flight_link, str=str)
 
 
 
