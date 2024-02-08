@@ -17,10 +17,7 @@ import pandas as pd
 import shutil
 from datetime import datetime
 import openpyxl
-
-
 import zipfile
-
 
 
 #Setting up Logger
@@ -75,13 +72,26 @@ def admin_page():
     if request.method == 'POST':
         formDict = request.form.to_dict()
         print('formDict:::', formDict)
-        if formDict.get('input_test_flight_link')[:8]=="https://":
-            with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'w') as file:
-                file.write(formDict.get('input_test_flight_link'))
-            flash(f'Updated TestFlight link', 'success')
-        else:
-            flash(f'TestFlight link must be a valid https url', 'warning')
-        return redirect(url_for('bp_admin.admin_page'))
+        # if formDict.get('add_link'):
+        if 'add_link' in formDict.keys():
+            print("**** add ing link ****")
+            if formDict.get('input_test_flight_link')[:8]=="https://":
+                with open(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'), 'w') as file:
+                    file.write(formDict.get('input_test_flight_link'))
+                flash(f'Updated TestFlight link', 'success')
+            else:
+                flash(f'TestFlight link must be a valid https url', 'warning')    
+            return redirect(url_for('bp_admin.admin_page'))
+
+        # elif formDict.get('delete_link'):
+        elif "delete_link" in formDict.keys():
+            print("**** deleting link ****")
+            os.remove(os.path.join(current_app.config.get('WEBSITE_FILES'),'TestFlightUrl.txt'))
+            test_flight_link=""
+            # flash(f'Removed TestFlight link from {request.url}', 'warning')
+            flash(f'Removed TestFlight link from {request.host}', 'warning')
+
+
     return render_template('admin/admin.html', users_list=users_dict, 
         test_flight_link=test_flight_link, str=str)
 
@@ -279,34 +289,21 @@ def upload_table(table_name):
             existing_users = sess.query(Users).all()
             list_of_emails_in_db = [i.email for i in existing_users]
             for email in list_of_emails_in_db:
-                df_update.drop(df_update[df_update.email== email].index, inplace = True)
-                print(f"-- removeing {email} from upload dataset --")
-        
+                # df_update.drop(df_update[df_update.email== email].index, inplace = True)
+                print(f"-- removing {email} from upload dataset --")
+                df_update.drop(df_update[df_update.email == email].index, inplace=True)
+                df_update.reset_index(drop=True, inplace=True)
 
-            for index in range(1,len(df_update)+1):
-                df_update.loc[index, 'password'] = df_update.loc[index, 'password'].encode()
-                # print(" ****************** ")
-                # print(f"- encoded row for {df_update.loc[index, 'email']} -")
-                # print(" ****************** ")
-
+            # Assuming 'password' column exists and you want to encode all non-null passwords
+            if 'password' in df_update.columns:
+                df_update['password'] = df_update['password'].apply(lambda x: x.encode() if pd.notnull(x) else x)
 
         df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
 
         flash(f"{table_name} update: successful!", "success")
 
-        # print("request.path: ", request.path)
-        # print("request.full_path: ", request.full_path)
-        # print("request.script_root: ", request.script_root)
-        # print("request.base_url: ", request.base_url)
-        # print("request.url: ", request.url)
-        # print("request.url_root: ", request.url_root)
-        # print("______")
-
-
         # return redirect(request.url)
         return redirect(url_for('bp_admin.admin_db_upload'))
-
-
     
     return render_template('admin/upload_table.html', table_name=table_name, 
         match_cols_dict = match_cols_dict,
@@ -349,8 +346,6 @@ def delete_user(email):
     flash(f'NOT deleteing emails with this link yet', 'success')
     return redirect(url_for('bp_admin.admin_page'))
     # return redirect(request.url)
-
-
 
 
 

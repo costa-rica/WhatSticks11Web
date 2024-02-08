@@ -1280,10 +1280,10 @@
   border-width: 0.5rem;
   text-decoration: none;
 }
-.admin_page .element_right {
+.admin_page .test_flight_link_buttons {
   width: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: space-evenly;
   padding-top: 1rem;
 }
 

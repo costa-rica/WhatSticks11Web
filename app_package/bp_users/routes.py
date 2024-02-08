@@ -65,7 +65,7 @@ def login():
             if password:
                 if bcrypt.checkpw(password.encode(), user.password):
                     login_user(user)
-                    flash('Logged in successfully', 'success')
+                    # flash('Logged in successfully', 'success')
                     # return redirect(url_for('bp_blog.blog_user_home'))
                     return redirect(url_for('bp_users.user_home'))
                 else:
