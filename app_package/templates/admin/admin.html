@@ -58,11 +58,12 @@
 
         <div class="std_frame_light_gray ">
             <h2>Users</h2>
-            {% for i,j in users_list.items() %}
+            {% for i in users_list %}
             <ul class="ul_no_bullets">
 
-                <li>{{ i +" (admin_users_permission: " + str(j) +")" }}  <a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=i) }}"
-                    style="display: inline;">&#215;</a></li>
+                <li><a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=i.username) }}"
+                    style="display: inline;">{{ i.username }}</a>:   
+                     {{ i.timezone }}</li>
 
 
             </ul>

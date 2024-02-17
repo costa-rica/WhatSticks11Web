@@ -59,8 +59,9 @@ def before_request():
 @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
 @login_required
 def admin_page():
-    users_list=[i.username for i in sess.query(Users).all()]
-    users_dict={i.username:i.admin_users_permission for i in sess.query(Users).all()}
+    # users_list=[i.username for i in sess.query(Users).all()]
+    users_list=[i for i in sess.query(Users).all()]
+    # users_dict={i.username:i.admin_users_permission for i in sess.query(Users).all()}
     test_flight_link = ""
 
     try:
@@ -92,7 +93,7 @@ def admin_page():
             flash(f'Removed TestFlight link from {request.host}', 'warning')
 
 
-    return render_template('admin/admin.html', users_list=users_dict, 
+    return render_template('admin/admin.html', users_list=users_list, 
         test_flight_link=test_flight_link, str=str)
 
 
