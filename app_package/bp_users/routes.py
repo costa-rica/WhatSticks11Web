@@ -101,7 +101,7 @@ def register():
             return redirect(url_for('bp_users.register'))
 
         hash_pw = bcrypt.hashpw(formDict.get('password').encode(), salt)
-        new_user = Users(email = new_email, password = hash_pw)
+        new_user = Users(email = new_email, password = hash_pw, timezone = "Etc/GMT")
         sess.add(new_user)
         sess.commit()
 
