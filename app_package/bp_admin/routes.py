@@ -115,6 +115,10 @@ def admin_db_download():
     if request.method == "POST":
         formDict = request.form.to_dict()
 
+        if os.path.exists(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_backup")):
+            for filename in os.listdir(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_backup")):
+                os.remove(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_backup",filename))
+
         # craete folder to save
         if not os.path.exists(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_backup")):
             os.makedirs(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_backup"))
@@ -166,40 +170,44 @@ def admin_db_upload():
 
     metadata = Base.metadata
     db_table_list = [table for table in metadata.tables.keys()]
-    dir_path_upload = os.path.join(current_app.config.get('DATABASE_HELPER_FILES'), 'db_upload')
+    
+    list_files_in_db_upload = os.listdir(current_app.config.get('DB_UPLOAD'))
 
     if request.method == "POST":
         formDict = request.form.to_dict()
-        # print(f"- search_rincons POST -")
-        # print("formDict: ", formDict)
-
-        requestFiles = request.files
-
-        # print("requestFiles: ", requestFiles)
-
-        # craete folder to store upload files
-        if not os.path.exists(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_upload")):
-            os.makedirs(os.path.join(current_app.config.get('DATABASE_HELPER_FILES'),"db_upload"))
-        
-        # csv_file_for_table = request.files.get('csv_table_upload')
-        file_for_table_upload = request.files.get('file_for_table_upload')
-        file_for_table_upload_filename = file_for_table_upload.filename
-
-        logger_bp_admin.info(f"-- Get CSV file name --")
-        logger_bp_admin.info(f"--  {file_for_table_upload_filename} --")
-
-        ## save to static rincon directory
-        path_to_uploaded_table_file = os.path.join(dir_path_upload,file_for_table_upload_filename)
-        file_for_table_upload.save(path_to_uploaded_table_file)
-
-        print(f"-- table to go to: { formDict.get('existing_db_table_to_update')}")
-
-        return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
-            path_to_uploaded_table_file=path_to_uploaded_table_file))
-            # path_to_uploaded_csv=path_to_uploaded_csv))
+        print(f"- admin_db_upload POST -")
+        print("formDict: ", formDict)
 
 
-    return render_template('admin/admin_db_upload_page.html', db_table_list=db_table_list)
+        if formDict.get('what_kind_of_post') == "upload_from_here":
+            requestFiles = request.files
+
+            
+            # csv_file_for_table = request.files.get('csv_table_upload')
+            file_for_table_upload = request.files.get('file_for_table_upload')
+            file_for_table_upload_filename = file_for_table_upload.filename
+
+            logger_bp_admin.info(f"-- Get CSV file name --")
+            logger_bp_admin.info(f"--  {file_for_table_upload_filename} --")
+
+            ## save to databases/WhatSticks/database_helpers/DB_UPLOAD directory
+            path_to_uploaded_table_file = os.path.join(current_app.config.get('DB_UPLOAD'),file_for_table_upload_filename)
+            file_for_table_upload.save(path_to_uploaded_table_file)
+
+            logger_bp_admin.info(f"-- table to go to: { formDict.get('existing_db_table_to_update')}")
+
+            return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
+                path_to_uploaded_table_file=path_to_uploaded_table_file))
+                # path_to_uploaded_csv=path_to_uploaded_csv))
+        elif formDict.get('what_kind_of_post') == "uploaded_already":
+            already_uploaded_filename = formDict.get('selectedFile')
+            path_to_uploaded_table_file = os.path.join(current_app.config.get('DB_UPLOAD'),already_uploaded_filename)
+            
+            return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
+                path_to_uploaded_table_file=path_to_uploaded_table_file))
+
+    return render_template('admin/admin_db_upload_page.html', db_table_list=db_table_list,
+        len=len, list_files_in_db_upload=list_files_in_db_upload)
 
 
 @bp_admin.route('/upload_table/<table_name>', methods = ['GET', 'POST'])

@@ -5,11 +5,7 @@
 
 
 <div class="admin_db_upload_page">
-    <!-- <div class="container"> -->
     <div class="col_1">
-        <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
-
-
         <div class="title_custom">
             <h1>Admin Upload Db Page</h1>
             <div id="small_screen_logo">
@@ -17,18 +13,58 @@
             </div>
         </div>
 
-    <div class="admin_db_sub">
+
+
+
       <div class="std_frame_light_gray ">
-        <div class="download_db_tables_form">
-          <div class="home_buttons">
-            Step 1: Select a csv file to upload<br>
-            <input type="file"  form="form_upload_db_step1"
-            accept=".csv, .pkl" name="file_for_table_upload" required>
-            <!-- accept=".csv, .pkl" name="csv_table_upload" required> -->
+
+
+        <!-- <div class="what_kind_of_post_div"> -->
+        <div class="div_upload_from_where">
+          <label for="action">Step 1: Upload from where?
+          </label>
+          <!-- <select id="action" name="what_kind_of_post" onchange='onSelectChangeHandler()' form="form_create_post"> -->
+          <select id="action" name="what_kind_of_post" onchange='onSelectChangeHandler()' form="form_upload_db_step1">
+            <option value="" disabled selected>Select one</option>
+            <option value="upload_from_here">Upload from here</option>
+            <option value="uploaded_already">View already uploaded files</option>
+          </select>
+        </div>
+
+        <!-- <div id="post_article_mult_files_id" class="post_article_mult_files_div"> -->
+        <div id="upload_from_here_id" class="upload_from_here_div">
+            
+            <div class="div_indent">
+              <input type="file"  form="form_upload_db_step1"
+              accept=".csv, .pkl" name="file_for_table_upload" >
+            </div>
+          </div><!-- upload_from_here_div-->
+          
+
+          <div id="uploaded_already_id" class="uploaded_already_div">
+            
+            <div class="div_indent">
+              <form id="filesForm">
+              {% for filename in list_files_in_db_upload %}
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="selectedFile" id="{{ filename }}" value="{{ filename }}"
+                  form="form_upload_db_step1">
+                  <label class="form-check-label" for="{{ filename }}">
+                      {{ filename }}
+                  </label>
+              </div>
+              {% endfor %}
+              <button type="button" class="btn btn-secondary" onclick="clearSelection()">Clear Selection</button>
+            </div>
+          </form>
+            </div><!-- uploaded_already_div -->
+
+
             <br><br>
             Step 2: Select the table to upload that csv data to
             <br>
-            <input list="db_tables" name="existing_db_table_to_update"  placeholder="double click to see list" form="form_upload_db_step1" required/>
+            <input class="input_display_filename form-control" list="db_tables" name="existing_db_table_to_update" 
+              placeholder="double click to see list" form="form_upload_db_step1" required/>
               <datalist id="db_tables">
                 {% for table in db_table_list %}
                 <option value="{{ table }}">
@@ -38,13 +74,9 @@
             <div class="btn_div">
               <button type="submit" name="upload_csv" value="true" class="btn btn-primary"
                 form="form_upload_db_step1">Next Step</button>
-            </div>
-
-          </div><!-- home_buttons -->
-
-        </div><!-- download_db_tables_form -->
+            </div><!-- btn_div -->
       </div><!-- std_framing -->
-    </div><!-- admin_db_sub -->
+    <!--</div> admin_db_sub -->
 
 
 
@@ -52,4 +84,43 @@
 </div><!-- main -->
 
 
+<script>
+  function onSelectChangeHandler() {
+    console.log("-- action activaited?");
+    var val = document.getElementById("action").value;
+    console.log("user selected: " + val);
+
+    switch (val) {
+      case "upload_from_here":
+        document.getElementById("upload_from_here_id").style.display = "block";
+        document.getElementById("uploaded_already_id").style.display = "none";
+        console.log("Add word converted to html");
+        break;
+
+      case "uploaded_already":
+        document.getElementById("upload_from_here_id").style.display = "none";
+        document.getElementById("uploaded_already_id").style.display = "block";
+        console.log("Add html file");
+        break;
+    }
+  }
+</script>
+
+
+<script>
+  function clearSelection() {
+  
+    const radios = document.forms['form_upload_db_step1'].elements['selectedFile'];
+    for (let i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+            radios[i].checked = false;
+            // Only one radio can be logically checked, don't check the rest
+            break;
+        }
+    }
+  }
+  </script>
+
 {% endblock %}
+
+

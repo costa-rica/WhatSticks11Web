@@ -61,7 +61,7 @@ def create_app(config_for_flask = config):
     create_folder(config_for_flask.WEBSITE_FILES)
     create_folder(config_for_flask.DIR_WEBSITE_UTILITY_IMAGES)
     create_folder(config_for_flask.DIR_WEBSITE_VIDEOS)
-
+    create_folder(config_for_flask.DB_UPLOAD)
     ############################################################################
     ## Build Sqlite database
     if os.path.exists(os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))):

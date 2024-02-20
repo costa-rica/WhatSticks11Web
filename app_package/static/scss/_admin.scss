@@ -147,11 +147,19 @@
     color: var(--color_text_white);
     width: 100%;
   }
-
-  .std_frame_sub {
-    padding: .5rem 0;
-    color: var(--color_text_dark);
+  .input_display_filename{
+    width:100%;
   }
+  .btn_div{
+    display: flex;
+    justify-content: end;
+    padding:1rem;
+  }
+  .div_indent{
+    padding:1rem 0 1rem 2rem;
+  }
+  #upload_from_here_id{display:none}
+  #uploaded_already_id{display:none}
 
 }
 
