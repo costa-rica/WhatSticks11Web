@@ -55,12 +55,13 @@
 
         <div class="std_frame_light_gray ">
             <h2>Users</h2>
-            {% for i in users_list %}
+            {% for user_and_user_loc_day_stats in users_user_loc_day_tuples %}
             <ul class="ul_no_bullets">
 
-                <li><a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=i.username) }}"
-                    style="display: inline;">{{ i.username }}</a>:   
-                     {{ i.timezone }}</li>
+                <li><a class="remove-image" href="{{ url_for('bp_admin.delete_user', email=user_and_user_loc_day_stats[0].username) }}"
+                    style="display: inline;">{{ user_and_user_loc_day_stats[0].username }}</a>:   
+                     {{ user_and_user_loc_day_stats[0].timezone }}, Count of UserDayLoc: {{ user_and_user_loc_day_stats[1] }},
+                    Min: {{ user_and_user_loc_day_stats[2] }}, Max: {{ user_and_user_loc_day_stats[3] }} </li>
 
 
             </ul>

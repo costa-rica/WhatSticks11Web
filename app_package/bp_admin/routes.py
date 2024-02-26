@@ -12,7 +12,8 @@ from ws_models import sess, engine, text, Users, Base
 from app_package.bp_users.utils import send_reset_email, send_confirm_email, \
     userPermission
 from app_package.bp_admin.utils import formatExcelHeader, \
-    load_database_util, fix_recalls_wb_util, fix_investigations_wb_util
+    load_database_util, fix_recalls_wb_util, fix_investigations_wb_util, \
+    get_user_loc_day_tuple
 import pandas as pd
 import shutil
 from datetime import datetime
@@ -61,6 +62,7 @@ def before_request():
 def admin_page():
     # users_list=[i.username for i in sess.query(Users).all()]
     users_list=[i for i in sess.query(Users).all()]
+    users_user_loc_day_tuples = get_user_loc_day_tuple(users_list)
     # users_dict={i.username:i.admin_users_permission for i in sess.query(Users).all()}
     test_flight_link = ""
 
@@ -93,7 +95,9 @@ def admin_page():
             flash(f'Removed TestFlight link from {request.host}', 'warning')
 
 
-    return render_template('admin/admin.html', users_list=users_list, 
+    return render_template('admin/admin.html', 
+        # users_list=users_list, 
+        users_user_loc_day_tuples=users_user_loc_day_tuples,
         test_flight_link=test_flight_link, str=str)
 
 
