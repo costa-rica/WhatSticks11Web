@@ -57,6 +57,7 @@ def create_app(config_for_flask = config):
     ############################################################################
     ## create folders for DB_ROOT
     create_folder(config_for_flask.DB_ROOT)
+    create_folder(config_for_flask.DIR_LOGS)
     # website files
     create_folder(config_for_flask.WEBSITE_FILES)
     create_folder(config_for_flask.DIR_WEBSITE_UTILITY_IMAGES)
