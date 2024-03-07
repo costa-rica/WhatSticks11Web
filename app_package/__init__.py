@@ -64,14 +64,10 @@ def create_app(config_for_flask = config):
     create_folder(config_for_flask.DIR_WEBSITE_VIDEOS)
     create_folder(config_for_flask.DB_UPLOAD)
     ############################################################################
-    ## Build Sqlite database
-    if os.path.exists(os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))):
-        logger_init.info(f"db already exists: {os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))}")
-    else:
-        Base.metadata.create_all(engine)
-        logger_init.info(f"NEW db created: {os.path.join(config_for_flask.DB_ROOT,os.environ.get('DB_NAME_WHAT_STICKS'))}")
-
-    logger_init.info(f"- DB_ROOT: {config_for_flask.DB_ROOT}")
+    # Build MySQL database
+    Base.metadata.create_all(engine)
+    logger_init.info(f"- MYSQL_USER: {config_for_flask.MYSQL_USER}")
+    logger_init.info(f"- MYSQL_DATABASE_NAME: {config_for_flask.MYSQL_DATABASE_NAME}")
 
     from app_package.bp_main.routes import bp_main
     from app_package.bp_users.routes import bp_users

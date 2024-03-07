@@ -31,7 +31,7 @@ logger_bp_error.addHandler(stream_handler)
 
 bp_error = Blueprint('bp_error', __name__)
 
-if os.environ.get('FLASK_CONFIG_TYPE')=='prod':
+if os.environ.get('FLASK_CONFIG_TYPE') in ['prod','dev']:
     @bp_error.app_errorhandler(400)
     def handle_400(err):
         logger_bp_error.info(f'@bp_error.app_errorhandler(400), err: {err}')
@@ -52,7 +52,6 @@ if os.environ.get('FLASK_CONFIG_TYPE')=='prod':
 
     @bp_error.app_errorhandler(404)
     def handle_404(err):
-
         logger_bp_error.info(f'@bp_error.app_errorhandler(404), err: {err}')
         logger_bp_error.info(f'- request.referrer: {request.referrer}')
         logger_bp_error.info(f'- request.url: {request.url}')
@@ -77,15 +76,17 @@ if os.environ.get('FLASK_CONFIG_TYPE')=='prod':
         return render_template('errors/error_template.html', error_number="502", error_message=error_message)
 
 
-    @bp_error.app_errorhandler(AttributeError)
-    @bp_error.app_errorhandler(KeyError)
-    @bp_error.app_errorhandler(TypeError)
-    @bp_error.app_errorhandler(FileNotFoundError)
-    @bp_error.app_errorhandler(ValueError)
-    # def error_key(FileNotFoundError):
-    def error_key(e):
-        error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
-        return render_template('errors/error_template_app_error.html', error_number="", error_message=e)
+    # @bp_error.app_errorhandler(AttributeError)
+    # @bp_error.app_errorhandler(KeyError)
+    # @bp_error.app_errorhandler(TypeError)
+    # @bp_error.app_errorhandler(FileNotFoundError)
+    # @bp_error.app_errorhandler(ValueError)
+    # # @bp_error.app_errorhandler(ZeroDivisionError)
+    # # def error_key(FileNotFoundError):
+    # def error_key(e):
+    #     # error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
+    #     error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
+    #     return render_template('errors/error_template_app_error.html', error_number="", error_message=e)
 
 
     @bp_error.app_errorhandler(jinja2.exceptions.TemplateNotFound)
@@ -96,3 +97,20 @@ if os.environ.get('FLASK_CONFIG_TYPE')=='prod':
         return render_template('errors/error_template_app_error.html', error_number="", error_message=e,
         error_message_2 = e)
 
+    @bp_error.app_errorhandler(Exception)
+    def handle_exception(e):
+        # Log the error as you do with other errors
+        logger_bp_error.error(f'Unhandled Exception: {e}', exc_info=True)
+
+        # You can check if the error is an HTTPException and use its code
+        # Otherwise, use 500 by default for unknown exceptions
+        if isinstance(e, werkzeug.exceptions.HTTPException):
+            error_code = e.code
+        else:
+            error_code = 500
+        error_type = type(e).__name__
+        error_message = "An unexpected error occurred. We're working to fix the issue."
+        error_message = e
+        # Return your custom error template and the status code
+        return render_template('errors/error_template.html', error_code=error_code,error_type=error_type, 
+            error_message=error_message), error_code
