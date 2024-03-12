@@ -144,9 +144,10 @@ def admin_db_download():
                 if col[:len(table_name)] == table_name:
                     df = df.rename(columns=({col: col[len(table_name)+1:]}))
 
-            # Users table convert password from bytes to strings
-            if table_name == 'users':
-                df['password'] = df['password'].str.decode("utf-8")
+            # Removed 20240310 - unnecessary with MySQL
+            # # Users table convert password from bytes to strings
+            # if table_name == 'users':
+            #     df['password'] = df['password'].str.decode("utf-8")
 
 
             db_tables_dict[table_name] = df
