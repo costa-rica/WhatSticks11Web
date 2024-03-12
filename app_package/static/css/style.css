@@ -1266,6 +1266,10 @@
   display: flex;
   justify-content: center;
 }
+.admin_page .upload_buttons_div {
+  width: 100%;
+  display: flex;
+}
 .admin_page .home_register {
   background-color: var(--bs-primary);
   border: solid var(--bs-primary);
@@ -1353,6 +1357,17 @@
 .admin_db_upload_page .div_indent {
   padding: 1rem 0 1rem 2rem;
 }
+.admin_db_upload_page .remove-image {
+  padding: 0 1rem;
+  color: red;
+  text-decoration: none;
+}
+.admin_db_upload_page .remove-image:hover {
+  font-size: large;
+  color: red;
+  background-color: var(--color-gray01-light);
+  border-radius: 4rem;
+}
 .admin_db_upload_page #upload_from_here_id {
   display: none;
 }
@@ -1390,6 +1405,17 @@
 .admin_db_upload_table_page .std_frame_sub {
   padding: 0.5rem 0;
   color: var(--color_text_dark);
+}
+
+.error_page {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: var(--color_text_white);
+  padding-top: 5rem;
+}
+.error_page .col_1 {
+  width: calc(100% - 10rem);
 }
 
 :root {

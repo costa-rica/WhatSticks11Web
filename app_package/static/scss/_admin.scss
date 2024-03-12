@@ -56,7 +56,11 @@
     display: flex;
     justify-content: center;
   }
+  .upload_buttons_div{
+    width: 100%;
+    display: flex;
 
+  }
   .home_register {
     background-color: var(--bs-primary);
     border: solid var(--bs-primary);
@@ -158,6 +162,17 @@
   .div_indent{
     padding:1rem 0 1rem 2rem;
   }
+  .remove-image{
+    padding: 0 1rem;
+    color:red;
+    text-decoration: none;
+  }
+  .remove-image:hover {
+    font-size: large;
+    color:red;
+    background-color: var(--color-gray01-light);
+    border-radius: 4rem;
+}
   #upload_from_here_id{display:none}
   #uploaded_already_id{display:none}
 

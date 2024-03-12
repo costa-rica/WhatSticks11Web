@@ -28,9 +28,16 @@
                         Download
                     </a>
 
-                    <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload') }}">
-                        Upload
-                    </a>
+                    <div class="upload_buttons_div">
+                        <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload_single_file') }}">
+                            Upload Single File
+                        </a>
+    
+                        <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload_zip') }}">
+                            Upload .zip and re-id
+                        </a>
+                    </div>
+
 
                 </div><!-- home_buttons -->
 

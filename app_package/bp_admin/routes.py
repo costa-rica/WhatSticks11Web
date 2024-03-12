@@ -144,11 +144,6 @@ def admin_db_download():
                 if col[:len(table_name)] == table_name:
                     df = df.rename(columns=({col: col[len(table_name)+1:]}))
 
-            # Removed 20240310 - unnecessary with MySQL
-            # # Users table convert password from bytes to strings
-            # if table_name == 'users':
-            #     df['password'] = df['password'].str.decode("utf-8")
-
 
             db_tables_dict[table_name] = df
             if formDict.get("download_files") == "csv":
@@ -164,10 +159,11 @@ def admin_db_download():
 
 
 
-@bp_admin.route('/admin_db_upload', methods = ['GET', 'POST'])
+
+@bp_admin.route('/admin_db_upload_single_file', methods = ['GET', 'POST'])
 @login_required
-def admin_db_upload():
-    logger_bp_admin.info('- in admin_db_upload -')
+def admin_db_upload_single_file():
+    logger_bp_admin.info('- in admin_db_upload_single_file -')
     logger_bp_admin.info(f"current_user.admin: {current_user.admin_users_permission}")
 
     if not current_user.admin_users_permission:
@@ -177,10 +173,15 @@ def admin_db_upload():
     db_table_list = [table for table in metadata.tables.keys()]
     
     list_files_in_db_upload = os.listdir(current_app.config.get('DB_UPLOAD'))
+    list_files_in_db_upload_csv_pkl_zip = []
+    for filename_string in list_files_in_db_upload:
+        filename, file_extension = os.path.splitext(filename_string)
+        if file_extension in ['.csv','.pkl']:
+            list_files_in_db_upload_csv_pkl_zip.append(filename_string)
 
     if request.method == "POST":
         formDict = request.form.to_dict()
-        print(f"- admin_db_upload POST -")
+        print(f"- admin_db_upload_single_file POST -")
         print("formDict: ", formDict)
 
 
@@ -211,8 +212,8 @@ def admin_db_upload():
             return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
                 path_to_uploaded_table_file=path_to_uploaded_table_file))
 
-    return render_template('admin/admin_db_upload_page.html', db_table_list=db_table_list,
-        len=len, list_files_in_db_upload=list_files_in_db_upload)
+    return render_template('admin/admin_db_upload_single_file_page.html', db_table_list=db_table_list,
+        len=len, list_files_in_db_upload_csv_pkl_zip=list_files_in_db_upload_csv_pkl_zip)
 
 
 @bp_admin.route('/upload_table/<table_name>', methods = ['GET', 'POST'])
@@ -317,12 +318,53 @@ def upload_table(table_name):
         flash(f"{table_name} update: successful!", "success")
 
         # return redirect(request.url)
-        return redirect(url_for('bp_admin.admin_db_upload'))
+        return redirect(url_for('bp_admin.admin_db_upload_single_file'))
     
     return render_template('admin/upload_table.html', table_name=table_name, 
         match_cols_dict = match_cols_dict,
         existing_table_column_names=existing_table_column_names,
         replacement_data_col_names = replacement_data_col_names)
+
+
+
+@bp_admin.route('/admin_db_upload_zip', methods = ['GET', 'POST'])
+@login_required
+def admin_db_upload_zip():
+    logger_bp_admin.info('- in admin_db_upload_zip -')
+    logger_bp_admin.info(f"current_user.admin: {current_user.admin_users_permission}")
+
+    if not current_user.admin_users_permission:
+        return redirect(url_for('bp_main.home'))
+
+    metadata = Base.metadata
+    db_table_list = [table for table in metadata.tables.keys()]
+    
+    list_files_in_db_upload = os.listdir(current_app.config.get('DB_UPLOAD'))
+    list_files_in_db_upload_csv_pkl_zip = []
+    for filename_string in list_files_in_db_upload:
+        filename, file_extension = os.path.splitext(filename_string)
+
+        if file_extension in ['.zip']:
+            list_files_in_db_upload_csv_pkl_zip.append(filename_string)
+
+    if request.method == "POST":
+        formDict = request.form.to_dict()
+        print(f"- admin_db_upload_zip POST -")
+
+        print("****************")
+        print("formDict: ", formDict)
+        print("****************")
+
+        
+        # request.referrer - the url for the page that sent 
+        # in this case it's just this same page.
+        return redirect(request.referrer)
+
+    return render_template('admin/admin_db_upload_zip_page.html', db_table_list=db_table_list,
+        len=len, list_files_in_db_upload_csv_pkl_zip=list_files_in_db_upload_csv_pkl_zip)
+
+
+
 
 
 @bp_admin.route('/nrodrig1_admin', methods=["GET"])
@@ -335,11 +377,44 @@ def nrodrig1_admin():
     return redirect(url_for('bp_main.home'))
 
 
+# @bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])
+@bp_admin.route("/download_db_tables_zip", methods=["GET","POST"])
+@login_required
+def download_db_tables_zip():
+    return send_from_directory(os.path.join(current_app.config['DATABASE_HELPER_FILES']),'db_backup.zip', as_attachment=True)
+
+
+
+@bp_admin.route("/delete_db_upload_file/<filename>", methods=["GET","POST"])
+@login_required
+def delete_db_upload_file(filename):
+    logger_bp_admin.info(f"- accessed delete_db_upload_file -")
+    logger_bp_admin.info(f"- deleting {filename} -")
+
+    try:
+        os.remove(os.path.join(current_app.config['DB_UPLOAD'],filename))
+    except FileNotFoundError:
+        logger_bp_admin.info(f"File {filename} was not found.")
+    except PermissionError:
+        logger_bp_admin.info(f"Permission denied: Unable to delete {filename}.")
+    except Exception as e:
+        logger_bp_admin.info(f"An error occurred: {e}")
+    
+
+    # Redirect back to the referrer page
+    referrer = request.referrer
+    if referrer:
+        return redirect(referrer)
+    else:
+        # Fallback to a default route if the referrer is not available
+        return redirect(url_for('bp_admin.admin_page'))
+
+
 
 @bp_admin.route("/delete_user/<email>", methods=["GET","POST"])
 @login_required
 def delete_user(email):
-    print('did we get here????', email)
+    logger_bp_admin.info(f'-accessed: delete_user {email}')
     # with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
     #     get_users_dict=json.load(json_file)
     #     json_file.close()
@@ -363,23 +438,15 @@ def delete_user(email):
 
 
 
-# @bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])
-@bp_admin.route("/download_db_tables_zip", methods=["GET","POST"])
-@login_required
-def download_db_tables_zip():
-    return send_from_directory(os.path.join(current_app.config['DATABASE_HELPER_FILES']),'db_backup.zip', as_attachment=True)
-
-
-
-
-
-
-
 
 
 ################
 ###  OLD ###
 ################
+
+
+
+
 
 
 
@@ -685,10 +752,10 @@ def download_db_tables_zip():
 
 
 
-# @bp_admin.route('/admin_db_upload', methods = ['GET', 'POST'])
+# @bp_admin.route('/admin_db_upload_single_file', methods = ['GET', 'POST'])
 # @login_required
-# def admin_db_upload():
-#     logger_bp_admin.info('- in bp_admin_db_upload -')
+# def admin_db_upload_single_file():
+#     logger_bp_admin.info('- in bp_admin_db_upload_single_file -')
 #     logger_bp_admin.info(f"current_user.admin: {current_user.admin}")
 
 #     if not current_user.admin:
@@ -728,7 +795,7 @@ def download_db_tables_zip():
 #             path_to_uploaded_csv=path_to_uploaded_csv))
 
 
-#     return render_template('admin/admin_db_upload.html', db_table_list=db_table_list)
+#     return render_template('admin/admin_db_upload_single_file.html', db_table_list=db_table_list)
 
 
 # @bp_admin.route('/upload_table/<table_name>', methods = ['GET', 'POST'])
@@ -853,7 +920,7 @@ def download_db_tables_zip():
 
 
 #         # return redirect(request.url)
-#         return redirect(url_for('bp_admin.admin_db_upload'))
+#         return redirect(url_for('bp_admin.admin_db_upload_single_file'))
 
 
     
