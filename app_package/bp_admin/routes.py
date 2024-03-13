@@ -348,7 +348,7 @@ def admin_db_upload_zip():
     if request.method == "POST":
         formDict = request.form.to_dict()
         logger_bp_admin.info(f"- admin_db_upload_zip POST -")
-        logger_bp_admin.info("formDict: ", formDict)
+        logger_bp_admin.info(f"formDict: {formDict}")
         zip_filename = formDict.get('zip_filename')
 
         if zip_filename == None:
