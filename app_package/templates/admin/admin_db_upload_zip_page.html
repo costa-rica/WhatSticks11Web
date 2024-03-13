@@ -31,7 +31,7 @@
             
             <div class="div_indent">
               <input type="file"  form="form_upload_db"
-              accept=".csv, .pkl" name="file_for_table_upload" >
+              accept=".zip" name="zip_filename" >
             </div>
           </div><!-- upload_from_here_div-->
           
@@ -42,7 +42,7 @@
               <form id="filesForm">
               {% for filename in list_files_in_db_upload_csv_pkl_zip %}
               <div class="form-check">
-                  <input class="form-check-input" type="radio" name="selectedFile" id="{{ filename }}" value="{{ filename }}"
+                  <input class="form-check-input" type="radio" name="zip_filename" id="{{ filename }}" value="{{ filename }}"
                   form="form_upload_db">
                   <label class="form-check-label" for="{{ filename }}">
                       {{ filename }}<a class="remove-image" href="{{ url_for('bp_admin.delete_db_upload_file', filename=filename) }}"
@@ -67,7 +67,26 @@
       </div><!-- std_framing -->
     <!--</div> admin_db_sub -->
 
-
+    <div class="std_frame_light_gray ">
+      <h3>Upload Process Using .zip Files</h3>
+      The .zip file should have a csv or .pkl of the Users, Locations, UserLocationDay, 
+      WeatherHistory, AppleHealthWorkouts, and AppleHealthQuantityCategory tables.
+      
+      This page uploads the entire suite of tables. The process is particular because
+      it assumes that there could be new data in the database that causes the uploaded .zip data
+      to have user_ids and locations_ids that conflict with data on the website. 
+      <br><br>
+      Therefore, to handle this potential conflict this process takes into account 
+      <u>existing data</u> in the database and appends the .zip data file without the same 
+      user_ids and location_ids. Instead, once the Users table assigns the Users .zip data the 
+      primary key id, that id is then updated in all the other tables (UserLocationDay, 
+      AppleHealthQuantityCategory, and AppleHealthWorkouts) with user_id before being uploaded.
+      <br><br>
+      Similiarly, the Locations table will assign the Locations .zip data with new primary key ids.
+      Those ids will be used to update all tables (UserLocationDay and WeatherHistory) where
+      location_id exists before appending to the database.
+      
+    </div>
 
   </div><!-- admin_db_page -->
 </div><!-- main -->

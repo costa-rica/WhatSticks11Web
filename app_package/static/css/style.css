@@ -1368,6 +1368,9 @@
   background-color: var(--color-gray01-light);
   border-radius: 4rem;
 }
+.admin_db_upload_page .warning {
+  color: red;
+}
 .admin_db_upload_page #upload_from_here_id {
   display: none;
 }
@@ -1416,6 +1419,11 @@
 }
 .error_page .col_1 {
   width: calc(100% - 10rem);
+}
+
+.modal-body > .div_element_right {
+  display: flex;
+  justify-content: end;
 }
 
 :root {

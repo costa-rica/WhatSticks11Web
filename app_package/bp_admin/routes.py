@@ -20,6 +20,9 @@ from datetime import datetime
 import openpyxl
 import zipfile
 
+from ws_utilities import create_df_crosswalk, update_and_append_user_location_day, \
+    update_and_append_via_df_crosswalk_users, update_and_append_via_df_crosswalk_locations
+
 
 #Setting up Logger
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
@@ -101,7 +104,6 @@ def admin_page():
         test_flight_link=test_flight_link, str=str)
 
 
-
 @bp_admin.route('/admin_db_download', methods = ['GET', 'POST'])
 @login_required
 def admin_db_download():
@@ -156,8 +158,6 @@ def admin_db_download():
         return redirect(url_for('bp_admin.download_db_tables_zip'))
     
     return render_template('admin/admin_db_download_page.html', db_table_list=db_table_list )
-
-
 
 
 @bp_admin.route('/admin_db_upload_single_file', methods = ['GET', 'POST'])
@@ -326,12 +326,10 @@ def upload_table(table_name):
         replacement_data_col_names = replacement_data_col_names)
 
 
-
 @bp_admin.route('/admin_db_upload_zip', methods = ['GET', 'POST'])
 @login_required
 def admin_db_upload_zip():
     logger_bp_admin.info('- in admin_db_upload_zip -')
-    logger_bp_admin.info(f"current_user.admin: {current_user.admin_users_permission}")
 
     if not current_user.admin_users_permission:
         return redirect(url_for('bp_main.home'))
@@ -349,21 +347,49 @@ def admin_db_upload_zip():
 
     if request.method == "POST":
         formDict = request.form.to_dict()
-        print(f"- admin_db_upload_zip POST -")
+        logger_bp_admin.info(f"- admin_db_upload_zip POST -")
+        logger_bp_admin.info("formDict: ", formDict)
+        zip_filename = formDict.get('zip_filename')
 
-        print("****************")
-        print("formDict: ", formDict)
-        print("****************")
+        if zip_filename == None:
+            flash(f"Select a .zip file", "warning")
+            return redirect(request.referrer)
 
+        # Step 1: Make Crosswalks 
+        df_crosswalk_locations = create_df_crosswalk('locations', zip_filename)
+        df_crosswalk_users = create_df_crosswalk('users', zip_filename)
+
+        # Step 2: Add UserLocationDay data with new user_ids and location_ids, if any new rows to add
+        rows_count_user_location_day = update_and_append_user_location_day(
+            zip_filename,df_crosswalk_users,df_crosswalk_locations)
         
+        # Step 3: Add WeatherHistory with new location_ids, if any new rows to add
+        row_count_weather_hist = update_and_append_via_df_crosswalk_locations(
+            'weather_history', 'location_id', zip_filename,df_crosswalk_locations)
+
+        # Step 4: Add AppleHealthWorkouts with new user_ids, if any new rows to add
+        row_count_workouts = update_and_append_via_df_crosswalk_users(
+            'apple_health_workout',zip_filename,df_crosswalk_users)
+        
+        # Step 5: Add AppleHealthQuantityCategory with new user_ids, if any new rows to add
+        row_count_qty_cat = update_and_append_via_df_crosswalk_users(
+            'apple_health_quantity_category',zip_filename,df_crosswalk_users)
+
         # request.referrer - the url for the page that sent 
         # in this case it's just this same page.
+
+        long_f_string = (
+            f"Successfully updated: \n {rows_count_user_location_day:,} rows to UserLocationDay" +
+            f"\n {row_count_weather_hist:,} rows to WeatherHistory " +
+            f"\n {row_count_workouts:,} rows to AppleHealthWorkouts" +
+            f"\n {row_count_qty_cat:,} rows to AppleHealthQuantityCategory"
+        )
+
+        flash( long_f_string, "success")
         return redirect(request.referrer)
 
     return render_template('admin/admin_db_upload_zip_page.html', db_table_list=db_table_list,
         len=len, list_files_in_db_upload_csv_pkl_zip=list_files_in_db_upload_csv_pkl_zip)
-
-
 
 
 
