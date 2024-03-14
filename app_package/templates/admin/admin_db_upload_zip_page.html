@@ -16,7 +16,6 @@
 
       <div class="std_frame_light_gray ">
 
-        <!-- <div class="what_kind_of_post_div"> -->
         <div class="div_upload_from_where">
           <label for="action">Step 1: Upload from where?
           </label>
@@ -30,8 +29,7 @@
         <div id="upload_from_here_id" class="upload_from_here_div">
             
             <div class="div_indent">
-              <input type="file"  form="form_upload_db" value="{{ filename }}"
-              accept=".zip" name="zip_filename" >
+              <input type="file"  form="form_upload_db" accept=".zip" name="zip_filename_uploaded">
             </div>
           </div><!-- upload_from_here_div-->
           
@@ -42,7 +40,7 @@
               <form id="filesForm">
               {% for filename in list_files_in_db_upload_csv_pkl_zip %}
               <div class="form-check">
-                  <input class="form-check-input" type="radio" name="zip_filename" id="{{ filename }}" value="{{ filename }}"
+                  <input class="form-check-input" type="radio" name="zip_filename_existing" value="{{ filename }}"
                   form="form_upload_db">
                   <label class="form-check-label" for="{{ filename }}">
                       {{ filename }}<a class="remove-image" href="{{ url_for('bp_admin.delete_db_upload_file', filename=filename) }}"

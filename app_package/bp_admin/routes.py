@@ -349,7 +349,24 @@ def admin_db_upload_zip():
         formDict = request.form.to_dict()
         logger_bp_admin.info(f"- admin_db_upload_zip POST -")
         logger_bp_admin.info(f"formDict: {formDict}")
-        zip_filename = formDict.get('zip_filename')
+        logger_bp_admin.info(f"request.files: {request.files}")
+        
+        file_for_table_upload = request.files.get('zip_filename_uploaded')
+        
+
+
+        if file_for_table_upload.filename != '':
+
+            zip_filename = file_for_table_upload.filename
+
+            logger_bp_admin.info(f"-- Get .zip file name --")
+            logger_bp_admin.info(f"-- {zip_filename} --")
+
+            ## save to databases/WhatSticks/database_helpers/DB_UPLOAD directory
+            path_to_uploaded_table_file = os.path.join(current_app.config.get('DB_UPLOAD'),zip_filename)
+            file_for_table_upload.save(path_to_uploaded_table_file)
+        else:
+            zip_filename = formDict.get('zip_filename_existing')
 
         if zip_filename == None:
             flash(f"Select a .zip file", "warning")
