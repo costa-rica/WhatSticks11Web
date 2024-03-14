@@ -50,35 +50,35 @@ def userPermission(email):
     
     return (False,)
 
-def send_reset_email(user):
-    token = user.get_reset_token()
-    logger_main.info(f"current_app.config.get(MAIL_USERNAME): {current_app.config.get('MAIL_USERNAME')}")
-    msg = Message('Password Reset Request',
-                  sender=current_app.config.get('MAIL_USERNAME'),
-                  recipients=[user.email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('bp_users.reset_token', token=token, _external=True)}
+# def send_reset_email(user):
+#     token = user.get_reset_token()
+#     logger_main.info(f"current_app.config.get(MAIL_USERNAME): {current_app.config.get('MAIL_USERNAME')}")
+#     msg = Message('Password Reset Request',
+#                   sender=current_app.config.get('MAIL_USERNAME'),
+#                   recipients=[user.email])
+#     msg.body = f'''To reset your password, visit the following link:
+# {url_for('bp_users.reset_token', token=token, _external=True)}
 
-If you did not make this request, ignore email and there will be no change.
+# If you did not make this request, ignore email and there will be no change.
 
--Nick
-What Sticks
-'''
+# -Nick
+# What Sticks
+# '''
 
-    mail.send(msg)
+#     mail.send(msg)
 
 
-def send_confirm_email(email):
-    if os.environ.get('CONFIG_TYPE') == 'prod':
-        logger_main.info(f"-- sending email to {email} --")
-        msg = Message('Welcome to What Sticks',
-            sender=current_app.config.get('MAIL_USERNAME'),
-            recipients=[email])
-        msg.body = 'You have succesfully signed up.'
-        mail.send(msg)
-        logger_main.info(f"-- email sent --")
-    else :
-        logger_main.info(f"-- Non prod mode, no email sent --")
+# def send_confirm_email(email):
+#     if os.environ.get('CONFIG_TYPE') == 'prod':
+#         logger_main.info(f"-- sending email to {email} --")
+#         msg = Message('Welcome to What Sticks',
+#             sender=current_app.config.get('MAIL_USERNAME'),
+#             recipients=[email])
+#         msg.body = 'You have succesfully signed up.'
+#         mail.send(msg)
+#         logger_main.info(f"-- email sent --")
+#     else :
+#         logger_main.info(f"-- Non prod mode, no email sent --")
 
 
 def create_shortname_list(user_files_list, user_id):
@@ -95,3 +95,13 @@ def create_shortname_list(user_files_list, user_id):
     
     return user_files_list_shortname
 
+def api_url():
+    match os.environ.get('FLASK_CONFIG_TYPE'):
+        case 'dev':
+            api_base_url = f"https://dev.api10.what-sticks.com"
+        case 'prod':
+            api_base_url = f"https://api10.what-sticks.com"
+        case _:
+            api_base_url = f"http://localhost:5001"
+    
+    return api_base_url

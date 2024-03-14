@@ -11,8 +11,7 @@ import os
 import json
 from ws_models import sess, engine, text, Users
 
-from app_package.bp_users.utils import send_reset_email, send_confirm_email, \
-    create_shortname_list
+from app_package.bp_users.utils import  create_shortname_list, api_url
 import datetime
 import requests
 import zipfile
@@ -126,8 +125,8 @@ def logout():
     logout_user()
     return redirect(url_for('bp_main.home'))
 
-@bp_users.route('/reset_password', methods = ["GET", "POST"])
-def reset_password():
+@bp_users.route('/request_reset_password', methods = ["GET", "POST"])
+def request_reset_password():
     page_name = 'Request Password Change'
     if current_user.is_authenticated:
         return redirect(url_for('bp_main.home'))
@@ -139,39 +138,62 @@ def reset_password():
         user = sess.query(Users).filter_by(email=email).first()
         if user:
         # send_reset_email(user)
-            logger_bp_users.info('Email reaquested to reset: ', email)
-            send_reset_email(user)
+            # logger_bp_users.info('Email reaquested to reset: ', email)
+            # send_reset_email(user)
+            base_url = api_url()
+            reset_pass_token_payload = {"email":email}
+            response_reset_pass_token = requests.request(
+                'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
+            response_reset_pass_token.status_code
+
             flash('Email has been sent with instructions to reset your password','info')
             # return redirect(url_for('bp_users.login'))
         else:
             flash('Email has not been registered with What Sticks','warning')
 
-        return redirect(url_for('bp_users.reset_password'))
+        # return redirect(url_for('bp_users.reset_password'))
+        return redirect(url_for('bp_users.request_reset_password'))
     return render_template('users/reset_request.html', page_name = page_name)
 
-@bp_users.route('/reset_password/<token>', methods = ["GET", "POST"])
-def reset_token(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('bp_main.user_home'))
+@bp_users.route('/reset_password', methods = ["GET", "POST"])
+def reset_password():
+    logger_bp_users.info(f"- accessed: reset_password with token")
+
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('bp_main.user_home'))
+    token = request.args.get('token')
     user = Users.verify_reset_token(token)
-    logger_bp_users.info('user::', user)
+    logger_bp_users.info(f'user:: {user}')
+    
     if user is None:
         flash('That is an invalid or expired token', 'warning')
         return redirect(url_for('bp_users.reset_password'))
     if request.method == 'POST':
+        logger_bp_users.info(f'request.method == POST')
 
         formDict = request.form.to_dict()
-        if formDict.get('password_text') != '':
-            hash_pw = bcrypt.hashpw(formDict.get('password_text').encode(), salt)
-            user.password = hash_pw
-            sess.commit()
-            flash('Password successfully updated', 'info')
-            return redirect(url_for('bp_users.login'))
-        else:
-            flash('Must enter non-empty password', 'warning')
-            return redirect(url_for('bp_users.reset_token', token=token))
+        logger_bp_users.info(f'formDict : {formDict}')
 
-    return render_template('users/reset_request.html', page_name='Enter New Password')
+        base_url = api_url()
+    
+        reset_pass_payload = {"password_text":formDict.get('password_text')}
+        headers = {'Content-Type':'application/json','x-access-token':token}
+        response_reset_pass = requests.request('GET',base_url + '/reset_password',headers=headers, json=reset_pass_payload)
+        response_reset_pass.status_code
+
+        if response_reset_pass.status_code == 200:
+            logger_bp_users.info(f'Refresh database here')
+            # Expire session so new data will take into effect when user logs in again
+            sess.expire_all()
+            sess.commit()
+            logout_user()
+            return redirect(url_for('bp_users.login'))
+
+        logger_bp_users.info(f'response_reset_pass.status_code: {response_reset_pass.status_code}')
+        logger_bp_users.info(f"password_text: {formDict.get('password_text')}")
+
+
+    return render_template('users/reset_request.html', token = token, page_name='Enter New Password')
 
 @bp_users.route('/user_home', methods = ['GET', 'POST'])
 @login_required

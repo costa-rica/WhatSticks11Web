@@ -9,8 +9,7 @@ from logging.handlers import RotatingFileHandler
 import os
 import json
 from ws_models import sess, engine, text, Users, Base
-from app_package.bp_users.utils import send_reset_email, send_confirm_email, \
-    userPermission
+from app_package.bp_users.utils import userPermission
 from app_package.bp_admin.utils import formatExcelHeader, \
     load_database_util, fix_recalls_wb_util, fix_investigations_wb_util, \
     get_user_loc_day_tuple

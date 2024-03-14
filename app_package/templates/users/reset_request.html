@@ -20,36 +20,37 @@
 
     <div class="std_frame_light_gray">
       <!-- <form method="POST" action=""> -->
+        
         <div class="password_reset_sub">
-          {% if page_name == 'Request Password Change' %}
-          <div class="email_input">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" class="register_text" form="form_1">
-          </div>
+          {% if token %}
 
-          {% else %}
           <div class="password_input">
             <label for="password">Password:</label>
             <input type="password" id="password_text" name="password_text" class="register_text" form="form_1">
           </div>
 
+
+          {% else %}
+
+          <div class="email_input">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" class="register_text" form="form_1">
+          </div>
+
           {% endif %}
     
           <div class="bottom_element">
-            {% if page_name == 'Request Password Change' %}
-            <input type="submit" value="Submit" class="btn btn-secondary btn_custom01" form="form_1">
-            {% else %}
-            
+            {% if token %}
             <div class="password_checkbox">
               <input class="form-check-input" type="checkbox" value="" id="password_checkbox" form="form_1">
               <label class="form-check-label" for="password_checkbox">Show password</label>
             </div>
 
 
-
-              <input type="submit" value="Update" class="btn btn-secondary " form="form_1">
-
-    
+              <input type="submit" value="Update" class="btn btn-primary " form="form_1">
+            {% else %}
+            
+              <input type="submit" value="Submit" class="btn btn-secondary btn_custom01" form="form_1">
             {% endif %}
             </div><!-- bottom_element -->
         </div><!-- password_reset_sub -->
