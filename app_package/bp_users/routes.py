@@ -141,7 +141,11 @@ def request_reset_password():
             # logger_bp_users.info('Email reaquested to reset: ', email)
             # send_reset_email(user)
             base_url = api_url()
-            reset_pass_token_payload = {"email":email}
+            # reset_pass_token_payload = {"email":email}
+            reset_pass_token_payload = {
+                "email":"nrodrig1@gmail.com",
+                "ws_api_password":current_app.config.get('WS_API_PASSWORD')
+                }
             response_reset_pass_token = requests.request(
                 'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
             response_reset_pass_token.status_code
