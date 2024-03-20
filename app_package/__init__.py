@@ -43,6 +43,11 @@ logger_init.info(f'--- Starting What Sticks 11 Web---')
 TEMPORARILY_DOWN = "ACTIVE" if os.environ.get('TEMPORARILY_DOWN') == "1" else "inactive"
 logger_init.info(f"- TEMPORARILY_DOWN: {TEMPORARILY_DOWN}")
 logger_init.info(f"- FLASK_CONFIG_TYPE: {os.environ.get('FLASK_CONFIG_TYPE')}")
+if os.environ.get('FLASK_CONFIG_TYPE')=='local':
+    logger_init.info(f"- ! This should not print if not local ! -")
+    logger_init.info(f"- SQL_URI_WHAT_STICKS_DB: {config.SQL_URI_WHAT_STICKS_DB}")
+    logger_init.info(f"- ! This should not print if not local ! -")
+
 
 mail = Mail()
 secure_headers = secure.Secure()

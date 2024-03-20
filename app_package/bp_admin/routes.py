@@ -370,35 +370,57 @@ def admin_db_upload_zip():
         if zip_filename == None:
             flash(f"Select a .zip file", "warning")
             return redirect(request.referrer)
+        count_of_new_users = 0
+        count_of_new_locations = 0
+        count_of_new_user_location_day = 0
+        count_of_new_weather_hist = 0
+        count_of_new_workouts = 0
+        count_of_new_qty_cat = 0
 
         # Step 1: Make Crosswalks 
-        df_crosswalk_locations = create_df_crosswalk('locations', zip_filename)
         df_crosswalk_users = create_df_crosswalk('users', zip_filename)
+        df_crosswalk_locations = create_df_crosswalk('locations', zip_filename)
 
-        # Step 2: Add UserLocationDay data with new user_ids and location_ids, if any new rows to add
-        rows_count_user_location_day = update_and_append_user_location_day(
-            zip_filename,df_crosswalk_users,df_crosswalk_locations)
-        
-        # Step 3: Add WeatherHistory with new location_ids, if any new rows to add
-        row_count_weather_hist = update_and_append_via_df_crosswalk_locations(
-            'weather_history', 'location_id', zip_filename,df_crosswalk_locations)
+        logger_bp_admin.info(f"-- count of df_crosswalk_users {len(df_crosswalk_users)} --")
+        logger_bp_admin.info(f"-- count of df_crosswalk_locations {len(df_crosswalk_locations)} --")
 
-        # Step 4: Add AppleHealthWorkouts with new user_ids, if any new rows to add
-        row_count_workouts = update_and_append_via_df_crosswalk_users(
-            'apple_health_workout',zip_filename,df_crosswalk_users)
+        if 'new_row' in df_crosswalk_users.columns:
+            count_of_new_users = len(df_crosswalk_users[df_crosswalk_users.new_row=='yes'])
+            df_crosswalk_users.drop(columns=['new_row'], inplace=True)
+        if 'new_row' in df_crosswalk_locations.columns:
+            count_of_new_locations = len(df_crosswalk_locations[df_crosswalk_locations.new_row=='yes'])
+            df_crosswalk_locations.drop(columns=['new_row'], inplace=True)
+
+        if len(df_crosswalk_locations) > 0 and len(df_crosswalk_users) > 0:
+            # Step 2: Add UserLocationDay data with new user_ids and location_ids, if any new rows to add
+            count_of_new_user_location_day = update_and_append_user_location_day(
+                zip_filename,df_crosswalk_users,df_crosswalk_locations)
         
-        # Step 5: Add AppleHealthQuantityCategory with new user_ids, if any new rows to add
-        row_count_qty_cat = update_and_append_via_df_crosswalk_users(
-            'apple_health_quantity_category',zip_filename,df_crosswalk_users)
+        if len(df_crosswalk_locations) > 0:
+            # Step 3: Add WeatherHistory with new location_ids, if any new rows to add
+            count_of_new_weather_hist = update_and_append_via_df_crosswalk_locations(
+                'weather_history', 'location_id', zip_filename,df_crosswalk_locations)
+
+        if len(df_crosswalk_users) > 0:
+            # Step 4: Add AppleHealthWorkouts with new user_ids, if any new rows to add
+            count_of_new_workouts = update_and_append_via_df_crosswalk_users(
+                'apple_health_workout',zip_filename,df_crosswalk_users)
+            
+            # Step 5: Add AppleHealthQuantityCategory with new user_ids, if any new rows to add
+            count_of_new_qty_cat = update_and_append_via_df_crosswalk_users(
+                'apple_health_quantity_category',zip_filename,df_crosswalk_users)
 
         # request.referrer - the url for the page that sent 
         # in this case it's just this same page.
 
         long_f_string = (
-            f"Successfully updated: \n {rows_count_user_location_day:,} rows to UserLocationDay" +
-            f"\n {row_count_weather_hist:,} rows to WeatherHistory " +
-            f"\n {row_count_workouts:,} rows to AppleHealthWorkouts" +
-            f"\n {row_count_qty_cat:,} rows to AppleHealthQuantityCategory"
+            f"Successfully added: " +
+            f"\n Users....................... {count_of_new_users:,} " +
+            f"\n Locations................... {count_of_new_locations:,}" +
+            f"\n UserLocationDay............. {count_of_new_user_location_day:,}" +
+            f"\n WeatherHistory.............. {count_of_new_weather_hist:,}" +
+            f"\n Workouts.................... {count_of_new_workouts:,}" +
+            f"\n AppleHealthQuantityCategory. {count_of_new_qty_cat:,}"
         )
 
         flash( long_f_string, "success")
