@@ -2,14 +2,14 @@
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
     abort, session, Response, current_app, send_from_directory, make_response, \
-    send_file
+    send_file, jsonify
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 import json
-from ws_models import sess, engine, text, Users
+from ws_models import session_scope, engine, text, Users
 
 from app_package.bp_users.utils import  create_shortname_list, api_url
 import datetime
@@ -54,30 +54,26 @@ def login():
         formDict = request.form.to_dict()
         print(f"formDict: {formDict}")
         email = formDict.get('email')
+        with session_scope() as session:
+            user = session.query(Users).filter_by(email=email).first()
 
-        user = sess.query(Users).filter_by(email=email).first()
+            # verify password using hash
+            password = formDict.get('password')
 
-        # verify password using hash
-        password = formDict.get('password')
-
-        if user:
-            if password:
-                if bcrypt.checkpw(password.encode(), user.password.encode()):
-                    login_user(user)
-                    # flash('Logged in successfully', 'success')
-                    # return redirect(url_for('bp_blog.blog_user_home'))
-                    return redirect(url_for('bp_users.user_home'))
+            if user:
+                if password:
+                    if bcrypt.checkpw(password.encode(), user.password.encode()):
+                        login_user(user)
+                        # flash('Logged in successfully', 'success')
+                        # return redirect(url_for('bp_blog.blog_user_home'))
+                        return redirect(url_for('bp_users.user_home'))
+                    else:
+                        flash('Password or email incorrectly entered', 'warning')
                 else:
-                    flash('Password or email incorrectly entered', 'warning')
-            else:
-                flash('Must enter password', 'warning')
-        # elif formDict.get('btn_login_as_guest'):
-        #     user = sess.query(Users).filter_by(id=2).first()
-        #     login_user(user)
+                    flash('Must enter password', 'warning')
 
-        #     return redirect(url_for('dash.dashboard', dash_dependent_var='steps'))
-        else:
-            flash('No user by that name', 'warning')
+            else:
+                flash('No user by that name', 'warning')
 
 
     return render_template('users/login.html', page_name = page_name)
@@ -90,32 +86,31 @@ def register():
     if request.method == 'POST':
         formDict = request.form.to_dict()
         new_email = formDict.get('email')
+        with session_scope() as session:
+            check_email = session.query(Users).filter_by(email = new_email).all()
 
-        check_email = sess.query(Users).filter_by(email = new_email).all()
+            logger_bp_users.info(f"check_email: {check_email}")
 
-        logger_bp_users.info(f"check_email: {check_email}")
+            if len(check_email)==1:
+                flash(f'The email you entered already exists you can sign in or try another email.', 'warning')
+                return redirect(url_for('bp_users.register'))
 
-        if len(check_email)==1:
-            flash(f'The email you entered already exists you can sign in or try another email.', 'warning')
-            return redirect(url_for('bp_users.register'))
+            hash_pw = bcrypt.hashpw(formDict.get('password').encode(), salt)
+            new_user = Users(email = new_email, password = hash_pw, timezone = "Etc/GMT")
+            session.add(new_user)
 
-        hash_pw = bcrypt.hashpw(formDict.get('password').encode(), salt)
-        new_user = Users(email = new_email, password = hash_pw, timezone = "Etc/GMT")
-        sess.add(new_user)
-        sess.commit()
+            # Send email confirming succesfull registration
+            try:
+                send_confirm_email(new_email)
+            except:
+                flash(f'Problem with email: {new_email}', 'warning')
+                return redirect(url_for('bp_users.login'))
 
-        # Send email confirming succesfull registration
-        try:
-            send_confirm_email(new_email)
-        except:
-            flash(f'Problem with email: {new_email}', 'warning')
-            return redirect(url_for('bp_users.login'))
-
-        #log user in
-        print('--- new_user ---')
-        print(new_user)
-        login_user(new_user)
-        flash(f'Succesfully registered: {new_email}', 'info')
+            #log user in
+            print('--- new_user ---')
+            print(new_user)
+            login_user(new_user)
+            flash(f'Succesfully registered: {new_email}', 'info')
         return redirect(url_for('bp_main.home'))
 
     return render_template('users/register.html', page_name = page_name)
@@ -135,25 +130,26 @@ def request_reset_password():
     if request.method == 'POST':
         formDict = request.form.to_dict()
         email = formDict.get('email')
-        user = sess.query(Users).filter_by(email=email).first()
-        if user:
-        # send_reset_email(user)
-            # logger_bp_users.info('Email reaquested to reset: ', email)
+        with session_scope() as session:
+            user = session.query(Users).filter_by(email=email).first()
+            if user:
             # send_reset_email(user)
-            base_url = api_url()
-            # reset_pass_token_payload = {"email":email}
-            reset_pass_token_payload = {
-                "email":"nrodrig1@gmail.com",
-                "ws_api_password":current_app.config.get('WS_API_PASSWORD')
-                }
-            response_reset_pass_token = requests.request(
-                'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
-            response_reset_pass_token.status_code
+                # logger_bp_users.info('Email reaquested to reset: ', email)
+                # send_reset_email(user)
+                base_url = api_url()
+                # reset_pass_token_payload = {"email":email}
+                reset_pass_token_payload = {
+                    "email":"nrodrig1@gmail.com",
+                    "ws_api_password":current_app.config.get('WS_API_PASSWORD')
+                    }
+                response_reset_pass_token = requests.request(
+                    'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
+                response_reset_pass_token.status_code
 
-            flash('Email has been sent with instructions to reset your password','info')
-            # return redirect(url_for('bp_users.login'))
-        else:
-            flash('Email has not been registered with What Sticks','warning')
+                flash('Email has been sent with instructions to reset your password','info')
+                # return redirect(url_for('bp_users.login'))
+            else:
+                flash('Email has not been registered with What Sticks','warning')
 
         # return redirect(url_for('bp_users.reset_password'))
         return redirect(url_for('bp_users.request_reset_password'))
@@ -187,10 +183,10 @@ def reset_password():
 
         if response_reset_pass.status_code == 200:
             logger_bp_users.info(f'Refresh database here')
-            # Expire session so new data will take into effect when user logs in again
-            sess.expire_all()
-            sess.commit()
-            logout_user()
+            with session_scope() as session:
+                # Expire session so new data will take into effect when user logs in again
+                session.expire_all()
+                logout_user()
             return redirect(url_for('bp_users.login'))
 
         logger_bp_users.info(f'response_reset_pass.status_code: {response_reset_pass.status_code}')
@@ -239,6 +235,29 @@ def user_home():
 @login_required
 def user_file(filename):
     return send_from_directory(current_app.config.get('DAILY_CSV'), filename)
+
+# Expire session to refresh app with new data from database
+@bp_users.route('/expire_session', methods = ['GET'])
+def expire_session():
+    logger_bp_users.info("- accessed expire_session -")
+
+    request_json = request.json
+    ws_api_password = request_json.get('ws_api_password')
+
+    if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
+        with session_scope() as session:
+            # Expire session so new data will take into effect when user logs in again
+            session.expire_all()
+        logger_bp_users.info("- Successfully expired session -")
+        # return redirect(url_for(request.referrer))
+        response_dict = {}
+        response_dict['alert_title'] = "Success"
+        response_dict['alert_message'] = f"Successfully expired session"
+
+        return jsonify(response_dict)
+
+
+
 
 
 

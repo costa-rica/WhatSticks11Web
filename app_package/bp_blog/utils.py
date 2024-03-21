@@ -1,7 +1,7 @@
 # import pandas as pd
 import os
 from flask import current_app
-from ws_models import sess, Users
+from ws_models import session_scope, Users
 import logging
 from logging.handlers import RotatingFileHandler
 from bs4 import BeautifulSoup
@@ -29,30 +29,30 @@ logger_bp_blog.addHandler(file_handler)
 logger_bp_blog.addHandler(stream_handler)
 
 def create_blog_posts_list(number_of_posts_to_return=False):
-    #Blog
-    blog_posts = sess.query(BlogPosts).all()
+    with session_scope() as session:
+        blog_posts = session.query(BlogPosts).all()
 
-    blog_posts_list =[]
-    for post in blog_posts:
-        if post.date_published in ["", None]:
-            post_date = post.time_stamp_utc.strftime("%Y-%m-%d")
-        else:
-            post_date = post.date_published.strftime("%Y-%m-%d")
-        post_title = post.title
-        post_description = post.description if post.description != None else "No description"
-        post_string_id = post.post_dir_name
+        blog_posts_list =[]
+        for post in blog_posts:
+            if post.date_published in ["", None]:
+                post_date = post.time_stamp_utc.strftime("%Y-%m-%d")
+            else:
+                post_date = post.date_published.strftime("%Y-%m-%d")
+            post_title = post.title
+            post_description = post.description if post.description != None else "No description"
+            post_string_id = post.post_dir_name
+            
+            blog_posts_list.append((post_date,post_title,post_description,post_string_id))
         
-        blog_posts_list.append((post_date,post_title,post_description,post_string_id))
-    
 
-    blog_posts_list.sort(key=lambda tuple_element: tuple_element[0], reverse=True)
-    if number_of_posts_to_return:
-        blog_posts_list = blog_posts_list[:number_of_posts_to_return]
+        blog_posts_list.sort(key=lambda tuple_element: tuple_element[0], reverse=True)
+        if number_of_posts_to_return:
+            blog_posts_list = blog_posts_list[:number_of_posts_to_return]
 
-    # print("- blog_posts_list -")
-    # print(blog_post_list_most_recent)
+        # print("- blog_posts_list -")
+        # print(blog_post_list_most_recent)
 
-    return blog_posts_list
+        return blog_posts_list
 
 
 def replace_img_src_jinja(blog_post_index_file_path_and_name, img_dir_name):

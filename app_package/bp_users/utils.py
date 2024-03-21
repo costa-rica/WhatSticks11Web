@@ -1,10 +1,6 @@
 from flask import current_app, url_for
 from flask_login import current_user
 import json
-# import requests
-# from datetime import datetime, timedelta
-from ws_models import sess, Users
-# import time
 from flask_mail import Message
 from app_package import mail
 import os

@@ -12,7 +12,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from app_package.bp_blog.utils import create_blog_posts_list, replace_img_src_jinja, \
     get_title, sanitize_directory_name
 
-from ws_models import sess, text, Users
+from ws_models import session_scope, text, Users
 from werkzeug.utils import secure_filename
 import shutil
 import zipfile
@@ -118,31 +118,28 @@ def blog_user_home():
 
     #check, create directories between db/ and static/
     # word_docs_dir_util()
+    with session_scope() as session:
+        all_my_posts=session.query(BlogPosts).filter_by(user_id=current_user.id).all()
+        # print(all_posts)
+        posts_details_list=[]
+        for i in all_my_posts:
+            posts_details_list.append([i.id, i.title, i.date_published.strftime("%m/%d/%Y"),
+                i.description, i.word_doc_to_html_filename])
+        
+        column_names=['id', 'blog_title', 'delete','date_published',
+            'blog_description','word_doc']
 
-    all_my_posts=sess.query(BlogPosts).filter_by(user_id=current_user.id).all()
-    # print(all_posts)
-    posts_details_list=[]
-    for i in all_my_posts:
-        posts_details_list.append([i.id, i.title, i.date_published.strftime("%m/%d/%Y"),
-            i.description, i.word_doc_to_html_filename])
-    
-    column_names=['id', 'blog_title', 'delete','date_published',
-         'blog_description','word_doc']
+        if request.method == 'POST':
+            formDict=request.form.to_dict()
+            print('formDict::', formDict)
+            if formDict.get('delete_record_id')!='':
+                post_id=formDict.get('delete_record_id')
+                print(post_id)
 
-    if request.method == 'POST':
-        formDict=request.form.to_dict()
-        print('formDict::', formDict)
-        if formDict.get('delete_record_id')!='':
-            post_id=formDict.get('delete_record_id')
-            print(post_id)
+                return redirect(url_for('bp_blog.blog_delete', post_id=post_id))
 
-            return redirect(url_for('bp_blog.blog_delete', post_id=post_id))
-    #     elif formDict.get('edit_post_button')!='':
-    #         print('post to delte:::', formDict.get('edit_post_button')[9:],'length:::', len(formDict.get('edit_post_button')[9:]))
-    #         post_id=int(formDict.get('edit_post_button')[10:])
-    #         return redirect(url_for('blog.blog_edit', post_id=post_id))
-    return render_template('blog/user_home.html', posts_details_list=posts_details_list, len=len,
-        column_names=column_names)
+        return render_template('blog/user_home.html', posts_details_list=posts_details_list, len=len,
+            column_names=column_names)
 
 
 @bp_blog.route("/create_post", methods=["GET","POST"])
@@ -421,76 +418,77 @@ def create_post():
 def blog_edit(post_id):
     if not current_user.is_authenticated:
         return redirect(url_for('main.home'))
+    with session_scope() as session:
+        post = session.query(BlogPosts).filter_by(id = post_id).first()
+        title = post.title
+        description = post.description
+        post_time_stamp_utc = post.time_stamp_utc.strftime("%Y-%m-%d")
 
-    post = sess.query(BlogPosts).filter_by(id = post_id).first()
-    title = post.title
-    description = post.description
-    post_time_stamp_utc = post.time_stamp_utc.strftime("%Y-%m-%d")
-
-    # if post.date_published in ["", None]:
-    #     post_date = post.time_stamp_utc.strftime("%Y-%m-%d")
-    # else:
-    if post.date_published in ["", None]:
-        post_date = ""
-    else:
-        post_date = post.date_published.strftime("%Y-%m-%d")
-
-    if request.method == 'POST':
-        formDict = request.form.to_dict()
-
-        title = formDict.get("blog_title")
-        description = formDict.get("blog_description")
-        date = formDict.get("blog_date_published")
-
-        post.title = formDict.get("blog_title")
-        post.description = formDict.get("blog_description")
-        if formDict.get('blog_date_published') == "":
-            post.date_published = None
+        # if post.date_published in ["", None]:
+        #     post_date = post.time_stamp_utc.strftime("%Y-%m-%d")
+        # else:
+        if post.date_published in ["", None]:
+            post_date = ""
         else:
-            post.date_published = datetime.strptime(formDict.get('blog_date_published'), "%Y-%m-%d")
-        sess_users.commit()
+            post_date = post.date_published.strftime("%Y-%m-%d")
 
-        flash("Post successfully updated", "success")
-        return redirect(request.url)
+        if request.method == 'POST':
+            formDict = request.form.to_dict()
 
-    return render_template('blog/edit_post.html', title= title, description = description, 
-        post_date = post_date, post_time_stamp_utc = post_time_stamp_utc)
+            title = formDict.get("blog_title")
+            description = formDict.get("blog_description")
+            date = formDict.get("blog_date_published")
+
+            post.title = formDict.get("blog_title")
+            post.description = formDict.get("blog_description")
+            if formDict.get('blog_date_published') == "":
+                post.date_published = None
+            else:
+                post.date_published = datetime.strptime(formDict.get('blog_date_published'), "%Y-%m-%d")
+
+
+            flash("Post successfully updated", "success")
+            return redirect(request.url)
+
+        return render_template('blog/edit_post.html', title= title, description = description, 
+            post_date = post_date, post_time_stamp_utc = post_time_stamp_utc)
 
 
 
 @bp_blog.route("/delete/<post_id>", methods=['GET','POST'])
 @login_required
 def blog_delete(post_id):
-    post_to_delete = sess.query(BlogPosts).get(int(post_id))
+    with session_scope() as session:
+        post_to_delete = session.query(BlogPosts).get(int(post_id))
 
-    print("where did the reqeust come from: ", request.referrer)
-    print("-------------------------------------------------")
+        print("where did the reqeust come from: ", request.referrer)
+        print("-------------------------------------------------")
 
-    if current_user.id != post_to_delete.user_id:
-        return redirect(url_for('blog.post_index'))
-    logger_bp_blog.info('-- In delete route --')
-    logger_bp_blog.info(f'post_id:: {post_id}')
+        if current_user.id != post_to_delete.user_id:
+            return redirect(url_for('blog.post_index'))
+        logger_bp_blog.info('-- In delete route --')
+        logger_bp_blog.info(f'post_id:: {post_id}')
 
-    # delete word document in templates/blog/posts
-    # blog_dir_for_delete = os.path.join(current_app.config.get('DB_ROOT'), "posts",post_to_delete.post_id_name_string)
-    blog_dir_for_delete = os.path.join(current_app.config.get('DIR_DB_AUX_BLOG_POSTS'),post_to_delete.post_dir_name)
+        # delete word document in templates/blog/posts
+        # blog_dir_for_delete = os.path.join(current_app.config.get('DB_ROOT'), "posts",post_to_delete.post_id_name_string)
+        blog_dir_for_delete = os.path.join(current_app.config.get('DIR_DB_AUX_BLOG_POSTS'),post_to_delete.post_dir_name)
 
-    # new_blog_dir_fp = os.path.join(current_app.config.get('DIR_DB_AUX_BLOG_POSTS'), new_post_dir_name)
+        # new_blog_dir_fp = os.path.join(current_app.config.get('DIR_DB_AUX_BLOG_POSTS'), new_post_dir_name)
 
-    try:
-        shutil.rmtree(blog_dir_for_delete)
-    except:
-        logger_bp_blog.info(f'No {blog_dir_for_delete} in static folder')
+        try:
+            shutil.rmtree(blog_dir_for_delete)
+        except:
+            logger_bp_blog.info(f'No {blog_dir_for_delete} in static folder')
 
-    # delete from database
-    sess.query(BlogPosts).filter(BlogPosts.id==post_id).delete()
-    sess_users.commit()
-    print(' request.referrer[len("create_post")*-1: ]:::', request.referrer[len("create_post")*-1: ])
-    if request.referrer[len("create_post")*-1: ] == "create_post":
-        return redirect(request.referrer)
+        # delete from database
+        session.query(BlogPosts).filter(BlogPosts.id==post_id).delete()
 
-    flash(f'Post removed successfully!', 'success')
-    return redirect(url_for('bp_blog.blog_user_home'))
+        print(' request.referrer[len("create_post")*-1: ]:::', request.referrer[len("create_post")*-1: ])
+        if request.referrer[len("create_post")*-1: ] == "create_post":
+            return redirect(request.referrer)
+
+        flash(f'Post removed successfully!', 'success')
+        return redirect(url_for('bp_blog.blog_user_home'))
 
 
 
