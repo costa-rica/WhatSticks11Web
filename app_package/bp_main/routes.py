@@ -3,6 +3,8 @@ from flask import render_template, current_app, send_from_directory
 import os
 import logging
 from logging.handlers import RotatingFileHandler
+# from ws_models import session_scope
+# from flask_login import login_required, login_user, logout_user, current_user
 
 
 bp_main = Blueprint('bp_main', __name__)
@@ -22,11 +24,56 @@ stream_handler.setFormatter(formatter_terminal)
 logger_bp_main.addHandler(file_handler)
 logger_bp_main.addHandler(stream_handler)
 
+# @bp_main.context_processor
+# def inject_user():
+#     logger_bp_main.info(f"-- ***** in inject_user route --")
+#     try:
+#         if current_user.is_authenticated:
+#             logger_bp_main.info(f"--  if current_user.is_authenticated --")
+#             user_id = current_user.id
+            
+#             try:
+#                 yield session
+#                 session.commit()
+#             except Exception as e:
+#                 session.rollback()
+#                 raise
+#             finally:
+#                 session.close()
+#             session = Session()
+#             user = session.get(Users,user_id)
+#             logger_bp_main.info(f"--  user: {user} --")
+#             login(user)
+#     except:
+#         logger_bp_main.info(f"--  if @bp_main.context_processor current_user is None --")
+
+# @bp_main.before_request
+# def before_request():
+#     logger_bp_main.info(f"-- ***** in before_request route --")
+#     try:
+#         if current_user.is_authenticated:
+#             logger_bp_main.info(f"--  if current_user.is_authenticated --")
+#             user_id = current_user.id
+            
+#             try:
+#                 yield session
+#                 session.commit()
+#             except Exception as e:
+#                 session.rollback()
+#                 raise
+#             finally:
+#                 session.close()
+#             session = Session()
+#             user = session.get(Users,user_id)
+#             logger_bp_main.info(f"--  user: {user} --")
+#             login(user)
+#     except:
+#         logger_bp_main.info(f"--  if @bp_main.before_request current_user is None --")
 
 @bp_main.route("/", methods=["GET","POST"])
 def home():
     logger_bp_main.info(f"-- in home page route --")
-
+    # logger_bp_main.info(f"--  current_user: {current_user} --")
     return render_template('main/home.html')
 
 @bp_main.route("/download_ios", methods=["GET","POST"])

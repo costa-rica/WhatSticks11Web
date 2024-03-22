@@ -3,13 +3,14 @@ from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
     abort, session, Response, current_app, send_from_directory, make_response, \
     send_file, jsonify
+from flask import g
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 import json
-from ws_models import session_scope, engine, text, Users
+from ws_models import session_scope, Session, engine, text, Users
 
 from app_package.bp_users.utils import  create_shortname_list, api_url
 import datetime
@@ -39,42 +40,83 @@ salt = bcrypt.gensalt()
 
 bp_users = Blueprint('bp_users', __name__)
 
+@bp_users.context_processor
+def inject_user():
+    logger_bp_users.info(f"-- ***** in inject_user route --")
+    try:
+        if current_user.is_authenticated:
+            logger_bp_users.info(f"--  if current_user.is_authenticated --")
+            user_id = current_user.id
+            
+            try:
+                yield session
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                raise
+            finally:
+                session.close()
+            session = Session()
+            user = session.get(Users,user_id)
+            logger_bp_users.info(f"--  user: {user} --")
+            login(user)
+    except:
+        logger_bp_users.info(f"--  if @bp_main.context_processor current_user is None --")
+
+@bp_users.before_request
+def before_request():
+    logger_bp_users.info(f"-- ***** in before_request route --")
+    try:
+        if current_user.is_authenticated:
+            logger_bp_users.info(f"--  if current_user.is_authenticated --")
+            user_id = current_user.id
+            
+            try:
+                yield session
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                raise
+            finally:
+                session.close()
+            session = Session()
+            user = session.get(Users,user_id)
+            logger_bp_users.info(f"--  user: {user} --")
+            login(user)
+    except:
+        logger_bp_users.info(f"--  if @bp_main.before_request current_user is None --")
 
 @bp_users.route('/login', methods = ['GET', 'POST'])
 def login():
     print('- in login')
-    if current_user.is_authenticated:
-        return redirect(url_for('bp_blog.blog_user_home'))
-    
-    logger_bp_users.info(f'- in login route')
-
-    page_name = 'Login'
-    if request.method == 'POST':
-        # session.permanent = True
-        formDict = request.form.to_dict()
-        print(f"formDict: {formDict}")
-        email = formDict.get('email')
-        with session_scope() as session:
-            user = session.query(Users).filter_by(email=email).first()
-
-            # verify password using hash
-            password = formDict.get('password')
-
-            if user:
-                if password:
-                    if bcrypt.checkpw(password.encode(), user.password.encode()):
-                        login_user(user)
-                        # flash('Logged in successfully', 'success')
-                        # return redirect(url_for('bp_blog.blog_user_home'))
-                        return redirect(url_for('bp_users.user_home'))
+    with session_scope() as session:
+        if current_user.is_authenticated:
+            return redirect(url_for('bp_users.user_home'))
+        logger_bp_users.info(f'- in login route')
+        page_name = 'Login'
+        if request.method == 'POST':
+            # session.permanent = True
+            formDict = request.form.to_dict()
+            print(f"formDict: {formDict}")
+            email = formDict.get('email')
+            with session_scope() as session:
+                user = session.query(Users).filter_by(email=email).first()
+                # verify password using hash
+                password = formDict.get('password')
+                if user:
+                    if password:
+                        if bcrypt.checkpw(password.encode(), user.password.encode()):
+                            login_user(user)
+                            # user_id = user.id
+                            # flash('Logged in successfully', 'success')
+                            # return redirect(url_for('bp_blog.blog_user_home'))
+                            return redirect(url_for('bp_users.user_home'))
+                        else:
+                            flash('Password or email incorrectly entered', 'warning')
                     else:
-                        flash('Password or email incorrectly entered', 'warning')
+                        flash('Must enter password', 'warning')
                 else:
-                    flash('Must enter password', 'warning')
-
-            else:
-                flash('No user by that name', 'warning')
-
+                    flash('No user by that name', 'warning')
 
     return render_template('users/login.html', page_name = page_name)
 
@@ -199,16 +241,30 @@ def reset_password():
 @login_required
 def user_home():
     logger_bp_users.info("- accessed user_home -")
-    user_file_prefix = f"user_{current_user.id:04}_df"
+    logger_bp_users.info(f"- request.args: {request.args} -")
+    user_id = request.args.get('user_id')
+    with session_scope() as session:
+        fresh_user = session.merge(current_user)
+    # user = session.get(Users, user_id)
+    # user = session.merge(current_user)
+    fresh_user = g.fresh_user
+    logger_bp_users.info(f"- fresh_user: {fresh_user} -")
+    # logger_bp_users.info(f"- user: {current_user} -")
+    # logger_bp_users.info(f"- user: {current_user} -")
+    # current_user = user
+    # logger_bp_users.info(f"- current_user: {current_user} -")
+    # user_file_prefix = f"user_{current_user.id:04}_df"
+    user_file_prefix = f"user_{fresh_user.id:04}_df"
     user_files_list = [ i for i in os.listdir(current_app.config.get('DAILY_CSV')) if user_file_prefix in i ]
-    user_files_list_shortname = create_shortname_list(user_files_list, current_user.id)
+    # user_files_list_shortname = create_shortname_list(user_files_list, current_user.id)
+    user_files_list_shortname = create_shortname_list(user_files_list, fresh_user.id)
     
     if request.method == 'POST':
         # Get the directory where the CSV files are stored
         csv_directory = current_app.config.get('DAILY_CSV')
 
         # Define the zip file name based on the current user's ID
-        zip_file_name = f"user_{current_user.id:04}_files.zip"
+        zip_file_name = f"user_{fresh_user.id:04}_files.zip"
         zip_file_path = os.path.join(csv_directory, zip_file_name)
 
         # Create a zip file in write mode
@@ -228,7 +284,7 @@ def user_home():
         return send_file(zip_file_path, as_attachment=True)
 
     return render_template('users/user_home.html', user_files_list=user_files_list, len=len,
-        user_files_list_shortname=user_files_list_shortname, zip=zip)
+        user_files_list_shortname=user_files_list_shortname, zip=zip, fresh_user=fresh_user)
 
 # User Files static data
 @bp_users.route('/user_file/<filename>')

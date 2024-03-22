@@ -67,12 +67,12 @@
         <li><a href="https://apps.apple.com/us/app/what-sticks/id6476108645"><i class="fa-solid fa-download"></i>Download iOS</a></li>
         <li><a href="{{ url_for('bp_main.privacy') }}"><i class="fa-solid fa-lock"></i>Privacy</a></li>
 
-        {% if current_user %}  
-        {% if current_user.is_authenticated %}  
+        {% if fresh_user %}  
+        {% if fresh_user.is_authenticated %}  
           <li><a href="{{ url_for('bp_users.user_home') }}"><i class="fa-solid fa-house"></i><span >User Home</span></a></li>
 
         
-          {% if current_user.admin_users_permission %}  
+          {% if fresh_user.admin_users_permission %}  
           <li class="li_logged_in"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span >Admin</span></a></li>  
           {% endif %}
           <li class="li_logged_in"><a href="{{ url_for('bp_users.logout') }}"><i class="fa-solid fa-right-to-bracket"></i>Logout</a></li>
@@ -133,9 +133,9 @@
           <li><a href="https://apps.apple.com/us/app/what-sticks/id6476108645"><i class="fa-solid fa-download"></i>Download iOS</a></li>
           <li><a href="{{ url_for('bp_main.privacy') }}"><i class="fa-solid fa-lock"></i>Privacy</a></li>
 
-          {% if current_user.is_authenticated %}  
+          {% if fresh_user.is_authenticated %}  
           <li><a href="{{ url_for('bp_users.user_home') }}"><i class="fa-solid fa-house"></i><span >User Home</span></a></li>
-          {% if current_user.admin_users_permission %}  
+          {% if fresh_user.admin_users_permission %}  
           <li class="li_logged_in"><a href="{{ url_for('bp_admin.admin_page') }}"><i class="fa-solid fa-ghost"></i><span >Admin</span></a></li>  
           {% endif %}
           <li class="li_logged_in"><a href="{{ url_for('bp_users.logout') }}"><i class="fa-solid fa-right-to-bracket"></i>Logout</a></li>

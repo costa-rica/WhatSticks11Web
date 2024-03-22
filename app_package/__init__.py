@@ -78,13 +78,13 @@ def create_app(config_for_flask = config):
     from app_package.bp_users.routes import bp_users
     from app_package.bp_admin.routes import bp_admin
     from app_package.bp_error.routes import bp_error
-    from app_package.bp_blog.routes import bp_blog
+    # from app_package.bp_blog.routes import bp_blog
 
     app.register_blueprint(bp_main)
     app.register_blueprint(bp_users)
     app.register_blueprint(bp_admin)
     app.register_blueprint(bp_error)
-    app.register_blueprint(bp_blog)
+    # app.register_blueprint(bp_blog)
 
     return app
 
