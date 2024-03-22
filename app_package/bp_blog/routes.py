@@ -4,8 +4,8 @@ from flask import render_template, url_for, redirect, flash, request,current_app
 import os
 from datetime import datetime
 import time
-import logging
-from logging.handlers import RotatingFileHandler
+# import logging
+# from logging.handlers import RotatingFileHandler
 
 import jinja2
 from flask_login import login_user, current_user, logout_user, login_required
@@ -18,32 +18,9 @@ import shutil
 import zipfile
 import jinja2
 import re
+from app_package._common.utilities import wrap_up_session, custom_logger
 
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
-
-#initialize a logger
-logger_bp_blog = logging.getLogger(__name__)
-logger_bp_blog.setLevel(logging.DEBUG)
-
-
-#where do we store logging information
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),"logs",'bp_blog.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_blog.addHandler(file_handler)
-logger_bp_blog.addHandler(stream_handler)
-
-
-# blog = Blueprint('blog', __name__)
-# blog = Blueprint('blog', __name__, static_url_path=os.path.join(os.environ.get('WEB_ROOT'),"app_package","static"), 
-#     static_folder=os.path.join(os.environ.get('DB_ROOT'),"posts"))
+logger_bp_blog = custom_logger('bp_blog.log')
 bp_blog = Blueprint('bp_blog', __name__)
 
 

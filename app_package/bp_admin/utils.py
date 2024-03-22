@@ -8,28 +8,11 @@ from logging.handlers import RotatingFileHandler
 import pandas as pd
 from datetime import datetime
 import csv
+from app_package._common.utilities import wrap_up_session, custom_logger
 
 
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
+logger_bp_admin = custom_logger('bp_admin.log')
 
-#initialize a logger
-logger_bp_admin = logging.getLogger(__name__)
-logger_bp_admin.setLevel(logging.DEBUG)
-
-
-#where do we store logging information
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),"logs",'bp_admin.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_admin.addHandler(file_handler)
-logger_bp_admin.addHandler(stream_handler)
 
 #return excel files formatted
 def formatExcelHeader(workbook,worksheet, df, start_row):

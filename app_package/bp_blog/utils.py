@@ -6,27 +6,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 from bs4 import BeautifulSoup
 import re
+from app_package._common.utilities import wrap_up_session, custom_logger
 
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
-
-#initialize a logger
-logger_bp_blog = logging.getLogger(__name__)
-logger_bp_blog.setLevel(logging.DEBUG)
-
-
-#where do we store logging information
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),"logs",'bp_blog.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_blog.addHandler(file_handler)
-logger_bp_blog.addHandler(stream_handler)
+logger_bp_blog = custom_logger('bp_blog.log')
 
 def create_blog_posts_list(number_of_posts_to_return=False):
     #Blog

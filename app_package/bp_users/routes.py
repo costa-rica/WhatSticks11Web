@@ -2,43 +2,25 @@
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
     abort, session, Response, current_app, send_from_directory, make_response, \
-    send_file
+    send_file, jsonify
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
-import logging
-from logging.handlers import RotatingFileHandler
+# import logging
+# from logging.handlers import RotatingFileHandler
+from app_package._common.utilities import custom_logger
 import os
 import json
 from ws_models import sess, engine, text, Users
-
 from app_package.bp_users.utils import  create_shortname_list, api_url
 import datetime
 import requests
 import zipfile
+from app_package._common.utilities import wrap_up_session, custom_logger
 
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
 
-#initialize a logger
-logger_bp_users = logging.getLogger(__name__)
-logger_bp_users.setLevel(logging.DEBUG)
-
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),'logs','bp_users.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_users.addHandler(file_handler)
-logger_bp_users.addHandler(stream_handler)
-
+logger_bp_users = custom_logger('bp_users.log')
 salt = bcrypt.gensalt()
-
 bp_users = Blueprint('bp_users', __name__)
-
 
 @bp_users.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -241,6 +223,50 @@ def user_file(filename):
     return send_from_directory(current_app.config.get('DAILY_CSV'), filename)
 
 
+# Expire session to refresh app with new data from database
+@bp_users.route('/expire_session', methods = ['GET'])
+def expire_session():
+    logger_bp_users.info("- accessed expire_session -")
+
+    request_json = request.json
+    ws_api_password = request_json.get('ws_api_password')
+
+    if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
+        # with session_scope() as session:
+            # Expire session so new data will take into effect when user logs in again
+        # sess.expire_all()
+        # wrap_up_session()
+        # try:
+        #     # perform some database operations
+        #     sess.commit()
+        # except:
+        #     sess.rollback()  # Roll back the transaction on error
+        #     raise
+        # finally:
+        #     sess.close()  # Ensure the session is closed in any case
+
+        logger_bp_users.info("- Successfully expired session -")
+        # return redirect(url_for(request.referrer))
+        response_dict = {}
+        response_dict['alert_title'] = "Success"
+        response_dict['alert_message'] = f"Successfully expired session"
+
+        return jsonify(response_dict)
+
+
+# def wrap_up_session():
+#     logger_bp_users.info("- accessed wrap_up_session -")
+#     try:
+#         # perform some database operations
+#         sess.commit()
+#         logger_bp_users.info("- perfomed: sess.commit() -")
+#     except:
+#         sess.rollback()  # Roll back the transaction on error
+#         logger_bp_users.info("- perfomed: sess.rollback() -")
+#         raise
+#     finally:
+#         sess.close()  # Ensure the session is closed in any case
+#         logger_bp_users.info("- perfomed: sess.close() -")
 
 # ########################
 # # recaptcha

@@ -18,35 +18,16 @@ import shutil
 from datetime import datetime
 import openpyxl
 import zipfile
-
 from ws_utilities import create_df_crosswalk, update_and_append_user_location_day, \
     update_and_append_via_df_crosswalk_users, update_and_append_via_df_crosswalk_locations
 
-
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
-
-#initialize a logger
-logger_bp_admin = logging.getLogger(__name__)
-logger_bp_admin.setLevel(logging.DEBUG)
-
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),'logs','bp_admin.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_admin.addHandler(file_handler)
-logger_bp_admin.addHandler(stream_handler)
+from app_package._common.utilities import wrap_up_session, custom_logger
 
 
+logger_bp_admin = custom_logger('bp_admin.log')
 salt = bcrypt.gensalt()
-
-
 bp_admin = Blueprint('bp_admin', __name__)
+
 
 @bp_admin.before_request
 def before_request():

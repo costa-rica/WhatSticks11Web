@@ -2,33 +2,13 @@ from flask import Blueprint
 from flask import render_template, current_app, request
 # from app_package.utils import logs_dir
 import os
-import logging
-from logging.handlers import RotatingFileHandler
+# import logging
+# from logging.handlers import RotatingFileHandler
 import jinja2
 import werkzeug
+from app_package._common.utilities import wrap_up_session, custom_logger
 
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
-
-#initialize a logger
-logger_bp_error = logging.getLogger(__name__)
-logger_bp_error.setLevel(logging.DEBUG)
-
-
-#where do we store logging information
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),"logs",'error_routes.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_bp_error.addHandler(file_handler)
-logger_bp_error.addHandler(stream_handler)
-
-
+logger_bp_error = custom_logger('bp_error.log')
 bp_error = Blueprint('bp_error', __name__)
 
 if os.environ.get('FLASK_CONFIG_TYPE') in ['prod','dev']:

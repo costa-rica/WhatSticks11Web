@@ -1,44 +1,17 @@
 from flask import current_app, url_for
 from flask_login import current_user
 import json
-# import requests
-# from datetime import datetime, timedelta
 from ws_models import sess, Users
-# import time
 from flask_mail import Message
 from app_package import mail
 import os
-# from werkzeug.utils import secure_filename
-# import zipfile
 import shutil
-import logging
-from logging.handlers import RotatingFileHandler
-# import re
 import pandas as pd
 from datetime import datetime
 import csv
+from app_package._common.utilities import wrap_up_session, custom_logger
 
-
-#Setting up Logger
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
-
-#initialize a logger
-logger_main = logging.getLogger(__name__)
-logger_main.setLevel(logging.DEBUG)
-
-
-#where do we store logging information
-file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),"logs",'bp_users.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
-file_handler.setFormatter(formatter)
-
-#where the stream_handler will print
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter_terminal)
-
-# logger_sched.handlers.clear() #<--- This was useful somewhere for duplicate logs
-logger_main.addHandler(file_handler)
-logger_main.addHandler(stream_handler)
+logger_bp_users = custom_logger('bp_users.log')
 
 
 #Kinetic Metrics, LLC
