@@ -32,7 +32,6 @@ def login():
 
     page_name = 'Login'
     if request.method == 'POST':
-        # session.permanent = True
         formDict = request.form.to_dict()
         print(f"formDict: {formDict}")
         email = formDict.get('email')
@@ -46,18 +45,11 @@ def login():
             if password:
                 if bcrypt.checkpw(password.encode(), user.password.encode()):
                     login_user(user)
-                    # flash('Logged in successfully', 'success')
-                    # return redirect(url_for('bp_blog.blog_user_home'))
                     return redirect(url_for('bp_users.user_home'))
                 else:
                     flash('Password or email incorrectly entered', 'warning')
             else:
                 flash('Must enter password', 'warning')
-        # elif formDict.get('btn_login_as_guest'):
-        #     user = sess.query(Users).filter_by(id=2).first()
-        #     login_user(user)
-
-        #     return redirect(url_for('dash.dashboard', dash_dependent_var='steps'))
         else:
             flash('No user by that name', 'warning')
 
@@ -232,21 +224,13 @@ def expire_session():
     ws_api_password = request_json.get('ws_api_password')
 
     if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
-        # with session_scope() as session:
-            # Expire session so new data will take into effect when user logs in again
-        # sess.expire_all()
-        # wrap_up_session()
-        # try:
-        #     # perform some database operations
-        #     sess.commit()
-        # except:
-        #     sess.rollback()  # Roll back the transaction on error
-        #     raise
-        # finally:
-        #     sess.close()  # Ensure the session is closed in any case
+
+        # Expire session so new data will take into effect when user logs in again
+        sess.expire_all()
+        wrap_up_session(logger_bp_users)
 
         logger_bp_users.info("- Successfully expired session -")
-        # return redirect(url_for(request.referrer))
+
         response_dict = {}
         response_dict['alert_title'] = "Success"
         response_dict['alert_message'] = f"Successfully expired session"

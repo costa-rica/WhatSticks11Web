@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import render_template, current_app, send_from_directory
 import os
 from app_package._common.utilities import wrap_up_session, custom_logger
+from ws_utilities import create_df_from_db_table_name
 
 
 logger_bp_main = custom_logger('bp_main.log')
@@ -11,6 +12,8 @@ bp_main = Blueprint('bp_main', __name__)
 @bp_main.route("/", methods=["GET","POST"])
 def home():
     logger_bp_main.info(f"-- in home page route --")
+    # df_users = create_df_from_db_table_name('users')
+    # logger_bp_main.info(df_users)
 
     return render_template('main/home.html')
 
