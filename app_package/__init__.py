@@ -43,7 +43,7 @@ logger_init.info(f'--- Starting What Sticks 11 Web---')
 TEMPORARILY_DOWN = "ACTIVE" if os.environ.get('TEMPORARILY_DOWN') == "1" else "inactive"
 logger_init.info(f"- TEMPORARILY_DOWN: {TEMPORARILY_DOWN}")
 logger_init.info(f"- FLASK_CONFIG_TYPE: {os.environ.get('FLASK_CONFIG_TYPE')}")
-if os.environ.get('FLASK_CONFIG_TYPE')=='local':
+if os.environ.get('FLASK_CONFIG_TYPE')=='workstation':
     logger_init.info(f"- ! This should not print if not local ! -")
     logger_init.info(f"- SQL_URI_WHAT_STICKS_DB: {config.SQL_URI_WHAT_STICKS_DB}")
     logger_init.info(f"- ! This should not print if not local ! -")
@@ -70,7 +70,7 @@ def create_app(config_for_flask = config):
     create_folder(config_for_flask.DB_UPLOAD)
     ############################################################################
     # Build MySQL database
-    Base.metadata.create_all(engine)
+    # Base.metadata.create_all(engine)
     logger_init.info(f"- MYSQL_USER: {config_for_flask.MYSQL_USER}")
     logger_init.info(f"- MYSQL_DATABASE_NAME: {config_for_flask.MYSQL_DATABASE_NAME}")
 
