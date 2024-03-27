@@ -11,7 +11,7 @@ from app_package._common.utilities import wrap_up_session, custom_logger
 logger_bp_error = custom_logger('bp_error.log')
 bp_error = Blueprint('bp_error', __name__)
 
-if os.environ.get('FLASK_CONFIG_TYPE') in ['prod','dev']:
+if os.environ.get('WS_CONFIG_TYPE') in ['prod','dev']:
     @bp_error.app_errorhandler(400)
     def handle_400(err):
         logger_bp_error.info(f'@bp_error.app_errorhandler(400), err: {err}')

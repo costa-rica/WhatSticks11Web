@@ -69,7 +69,7 @@ def create_shortname_list(user_files_list, user_id):
     return user_files_list_shortname
 
 def api_url():
-    match os.environ.get('FLASK_CONFIG_TYPE'):
+    match os.environ.get('WS_CONFIG_TYPE'):
         case 'dev':
             api_base_url = f"https://dev.api10.what-sticks.com"
         case 'prod':
