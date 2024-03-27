@@ -294,7 +294,7 @@ def upload_table(table_name):
                 df_update['password'] = df_update['password'].apply(lambda x: x.encode() if pd.notnull(x) else x)
 
         df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
-
+        wrap_up_session(logger_bp_admin)
         flash(f"{table_name} update: successful!", "success")
 
         # return redirect(request.url)
@@ -403,7 +403,7 @@ def admin_db_upload_zip():
             f"\n Workouts.................... {count_of_new_workouts:,}" +
             f"\n AppleHealthQuantityCategory. {count_of_new_qty_cat:,}"
         )
-
+        wrap_up_session(logger_bp_admin)
         flash( long_f_string, "success")
         return redirect(request.referrer)
 
