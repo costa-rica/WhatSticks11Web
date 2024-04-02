@@ -2,7 +2,7 @@
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
     abort, session, Response, current_app, send_from_directory, make_response, \
-    send_file, jsonify
+    send_file, jsonify, g
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
 # import logging
@@ -10,33 +10,39 @@ from flask_login import login_required, login_user, logout_user, current_user
 from app_package._common.utilities import custom_logger
 import os
 import json
-from ws_models import sess, engine, text, Users
+# from ws_models import sess, engine, text, Users
+from ws_models import engine, DatabaseSession, text, Users
 from app_package.bp_users.utils import  create_shortname_list, api_url
 import datetime
 import requests
 import zipfile
-from app_package._common.utilities import wrap_up_session, custom_logger
+from app_package._common.utilities import custom_logger
 
 
 logger_bp_users = custom_logger('bp_users.log')
 salt = bcrypt.gensalt()
 bp_users = Blueprint('bp_users', __name__)
 
+@bp_users.before_request
+def before_request():
+    # Assign a new session to a global `g` object, accessible during the whole request
+    g.db_session = DatabaseSession()
+
+
 @bp_users.route('/login', methods = ['GET', 'POST'])
 def login():
-    print('- in login')
+    logger_bp_users.info('- in login -')
+    db_session = g.db_session
     if current_user.is_authenticated:
-        return redirect(url_for('bp_blog.blog_user_home'))
-    
-    logger_bp_users.info(f'- in login route')
+        return redirect(url_for('bp_users.user_home'))
 
     page_name = 'Login'
     if request.method == 'POST':
         formDict = request.form.to_dict()
-        print(f"formDict: {formDict}")
+        logger_bp_users.info(f"formDict: {formDict}")
         email = formDict.get('email')
 
-        user = sess.query(Users).filter_by(email=email).first()
+        user = db_session.query(Users).filter_by(email=email).first()
 
         # verify password using hash
         password = formDict.get('password')
@@ -65,7 +71,7 @@ def register():
         formDict = request.form.to_dict()
         new_email = formDict.get('email')
 
-        check_email = sess.query(Users).filter_by(email = new_email).all()
+        check_email = db_session.query(Users).filter_by(email = new_email).all()
 
         logger_bp_users.info(f"check_email: {check_email}")
 
@@ -75,8 +81,8 @@ def register():
 
         hash_pw = bcrypt.hashpw(formDict.get('password').encode(), salt)
         new_user = Users(email = new_email, password = hash_pw, timezone = "Etc/GMT")
-        sess.add(new_user)
-        sess.commit()
+        db_session.add(new_user)
+        # sess.commit()
 
         # Send email confirming succesfull registration
         try:
@@ -109,7 +115,7 @@ def request_reset_password():
     if request.method == 'POST':
         formDict = request.form.to_dict()
         email = formDict.get('email')
-        user = sess.query(Users).filter_by(email=email).first()
+        user = db_session.query(Users).filter_by(email=email).first()
         if user:
         # send_reset_email(user)
             # logger_bp_users.info('Email reaquested to reset: ', email)
@@ -161,9 +167,10 @@ def reset_password():
 
         if response_reset_pass.status_code == 200:
             logger_bp_users.info(f'Refresh database here')
-            # Expire session so new data will take into effect when user logs in again
-            sess.expire_all()
-            sess.commit()
+            # # NOTE: I think this i unnecessary with the new db_session, before and teardown_appcontext implementation
+            # # Expire session so new data will take into effect when user logs in again
+            # sess.expire_all()
+            # sess.commit()
             logout_user()
             return redirect(url_for('bp_users.login'))
 
@@ -215,27 +222,30 @@ def user_file(filename):
     return send_from_directory(current_app.config.get('DAILY_CSV'), filename)
 
 
-# Expire session to refresh app with new data from database
-@bp_users.route('/expire_session', methods = ['GET'])
-def expire_session():
-    logger_bp_users.info("- accessed expire_session -")
+#####################################
+## OBE due to teardown_appcontext ###
+#####################################
+# # Expire session to refresh app with new data from database
+# @bp_users.route('/expire_session', methods = ['GET'])
+# def expire_session():
+#     logger_bp_users.info("- accessed expire_session -")
 
-    request_json = request.json
-    ws_api_password = request_json.get('ws_api_password')
+#     request_json = request.json
+#     ws_api_password = request_json.get('ws_api_password')
 
-    if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
+#     if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
 
-        # Expire session so new data will take into effect when user logs in again
-        sess.expire_all()
-        wrap_up_session(logger_bp_users)
+#         # Expire session so new data will take into effect when user logs in again
+#         sess.expire_all()
+#         wrap_up_session(logger_bp_users)
 
-        logger_bp_users.info("- Successfully expired session -")
+#         logger_bp_users.info("- Successfully expired session -")
 
-        response_dict = {}
-        response_dict['alert_title'] = "Success"
-        response_dict['alert_message'] = f"Successfully expired session"
+#         response_dict = {}
+#         response_dict['alert_title'] = "Success"
+#         response_dict['alert_message'] = f"Successfully expired session"
 
-        return jsonify(response_dict)
+#         return jsonify(response_dict)
 
 
 # def wrap_up_session():

@@ -1,8 +1,6 @@
 
 # What Sticks 11 Web
-
-
-
+![What Sticks Logo](https://what-sticks.com/website_images/wsLogo180noName.png)
 ## Description
 Web application for What Sticks
 

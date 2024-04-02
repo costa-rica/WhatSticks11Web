@@ -1,22 +1,35 @@
-from ws_models import sess, engine, text, Users
+from ws_models import engine, DatabaseSession, text, Users
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from flask_login import LoginManager
+from pytz import timezone
+from datetime import datetime
+from flask import g
 
+login_manager= LoginManager()
+login_manager.login_view = 'bp_users.login'
+login_manager.login_message_category = 'info'
 
-def wrap_up_session(custom_logger):
-    custom_logger.info("- accessed wrap_up_session -")
-    try:
-        # perform some database operations
-        sess.commit()
-        custom_logger.info("- perfomed: sess.commit() -")
-    except:
-        sess.rollback()  # Roll back the transaction on error
-        custom_logger.info("- perfomed: sess.rollback() -")
-        raise
-    # finally:
-    #     sess.close()  # Ensure the session is closed in any case
-    #     custom_logger.info("- perfomed: sess.close() -")
+@login_manager.user_loader
+def load_user(user_id):
+    print("-- def load_user(user_id) --")
+    # NOTE: This could be a problem we are usign this g.db_session cavalierly her
+    g.db_session = DatabaseSession()
+    user = g.db_session.query(Users).filter_by(id = user_id).first()
+    print("* created a g.db_session *")
+    return user
+
+def teardown_appcontext(exception=None):
+    print("- in teardown_appcontext")
+    db_session = g.pop('db_session', None)
+    if db_session is not None:
+        if exception is None:
+            db_session.commit()
+        else:
+            db_session.rollback()
+        print("----- db_session.close() -----")
+        db_session.close()
 
 
 def custom_logger(logger_filename):
@@ -50,3 +63,54 @@ def custom_logger(logger_filename):
         logger.addHandler(stream_handler)
 
     return logger
+
+def custom_logger_init():
+
+    logging.Formatter.converter = timetz
+
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+    formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
+
+    logger_init = logging.getLogger('__init__')
+    logger_init.setLevel(logging.DEBUG)
+
+    file_handler = RotatingFileHandler(os.path.join(os.environ.get('WEB_ROOT'),'logs','__init__.log'), mode='a', maxBytes=5*1024*1024,backupCount=2)
+    file_handler.setFormatter(formatter)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter_terminal)
+
+    stream_handler_tz = logging.StreamHandler()
+
+    logger_init.addHandler(file_handler)
+    logger_init.addHandler(stream_handler)
+
+    logging.getLogger('werkzeug').setLevel(logging.DEBUG)
+    logging.getLogger('werkzeug').addHandler(file_handler)
+
+    return logger_init
+
+# timezone 
+def timetz(*args):
+    return datetime.now(timezone('Europe/Paris') ).timetuple()
+
+#####################################
+## OBE due to teardown_appcontext ###
+#####################################
+# def wrap_up_session(custom_logger):
+#     custom_logger.info("- accessed wrap_up_session -")
+#     try:
+#         # perform some database operations
+#         sess.commit()
+#         custom_logger.info("- perfomed: sess.commit() -")
+#     except:
+#         sess.rollback()  # Roll back the transaction on error
+#         custom_logger.info("- perfomed: sess.rollback() -")
+#         raise
+#     finally:
+#         sess.close()  # Ensure the session is closed in any case
+#         custom_logger.info("- perfomed: sess.close() -")
+
+
+
+

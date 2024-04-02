@@ -8,11 +8,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import json
-from ws_models import sess, engine, text, Users, Base
-from app_package.bp_users.utils import userPermission
-from app_package.bp_admin.utils import formatExcelHeader, \
-    load_database_util, fix_recalls_wb_util, fix_investigations_wb_util, \
-    get_user_loc_day_tuple
+from ws_models import Base, engine, DatabaseSession, text, Users
+from app_package.bp_admin.utils import get_user_loc_day_tuple
 import pandas as pd
 import shutil
 from datetime import datetime
@@ -21,7 +18,7 @@ import zipfile
 from ws_utilities import create_df_crosswalk, update_and_append_user_location_day, \
     update_and_append_via_df_crosswalk_users, update_and_append_via_df_crosswalk_locations
 
-from app_package._common.utilities import wrap_up_session, custom_logger
+from app_package._common.utilities import custom_logger
 
 
 logger_bp_admin = custom_logger('bp_admin.log')
@@ -31,8 +28,9 @@ bp_admin = Blueprint('bp_admin', __name__)
 
 @bp_admin.before_request
 def before_request():
-    logger_bp_admin.info(f"-- ***** in before_request route --")
-    ###### TEMPORARILY_DOWN: redirects to under construction page ########
+    logger_bp_admin.info(f"- in before_request route --")
+    g.db_session = DatabaseSession()
+    # TEMPORARILY_DOWN: redirects to under construction page #
     if os.environ.get('TEMPORARILY_DOWN') == '1':
         if request.url != request.url_root + url_for('bp_main.temporarily_down')[1:]:
             # logger_bp_users.info("*** (logger_bp_users) Redirected ")
@@ -43,10 +41,9 @@ def before_request():
 @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
 @login_required
 def admin_page():
-    # users_list=[i.username for i in sess.query(Users).all()]
-    users_list=[i for i in sess.query(Users).all()]
+    db_session = g.db_session
+    users_list=[i for i in db_session.query(Users).all()]
     users_user_loc_day_tuples = get_user_loc_day_tuple(users_list)
-    # users_dict={i.username:i.admin_users_permission for i in sess.query(Users).all()}
     test_flight_link = ""
 
     try:
@@ -89,6 +86,7 @@ def admin_page():
 def admin_db_download():
     logger_bp_admin.info('- in admin_db_download -')
     logger_bp_admin.info(f"current_user.admin_users_permission: {current_user.admin_users_permission}")
+    db_session = g.db_session
 
     if not current_user.admin_users_permission:
         return redirect(url_for('bp_main.home'))
@@ -117,7 +115,8 @@ def admin_db_download():
       
         db_tables_dict = {}
         for table_name in db_table_list:
-            base_query = sess.query(metadata.tables[table_name])
+            # base_query = sess.query(metadata.tables[table_name])
+            base_query = db_session.query(metadata.tables[table_name])
             df = pd.read_sql(text(str(base_query)), engine.connect())
 
             # fix table names
@@ -200,6 +199,9 @@ def admin_db_upload_single_file():
 @login_required
 def upload_table(table_name):
     logger_bp_admin.info('- in upload_table -')
+
+    db_session = g.db_session
+
     logger_bp_admin.info(f"current_user.admin: {current_user.admin_users_permission}")
     # path_to_uploaded_csv = request.args.get('path_to_uploaded_csv')
     path_to_uploaded_table_file = request.args.get('path_to_uploaded_table_file')
@@ -281,7 +283,7 @@ def upload_table(table_name):
         # NOTE: There needs to be a user to upload data
         if table_name == 'users':
             print("--- Found users table ---")
-            existing_users = sess.query(Users).all()
+            existing_users = db_session.query(Users).all()
             list_of_emails_in_db = [i.email for i in existing_users]
             for email in list_of_emails_in_db:
                 # df_update.drop(df_update[df_update.email== email].index, inplace = True)
@@ -294,7 +296,7 @@ def upload_table(table_name):
                 df_update['password'] = df_update['password'].apply(lambda x: x.encode() if pd.notnull(x) else x)
 
         df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
-        wrap_up_session(logger_bp_admin)
+        # wrap_up_session(logger_bp_admin)
         flash(f"{table_name} update: successful!", "success")
 
         # return redirect(request.url)
@@ -403,7 +405,7 @@ def admin_db_upload_zip():
             f"\n Workouts.................... {count_of_new_workouts:,}" +
             f"\n AppleHealthQuantityCategory. {count_of_new_qty_cat:,}"
         )
-        wrap_up_session(logger_bp_admin)
+        # wrap_up_session(logger_bp_admin)
         flash( long_f_string, "success")
         return redirect(request.referrer)
 
@@ -414,10 +416,11 @@ def admin_db_upload_zip():
 
 @bp_admin.route('/nrodrig1_admin', methods=["GET"])
 def nrodrig1_admin():
-    nrodrig1 = sess.query(Users).filter_by(email="nrodrig1@gmail.com").first()
+    db_session = g.db_session
+    nrodrig1 = db_session.query(Users).filter_by(email="nrodrig1@gmail.com").first()
     if nrodrig1 != None:
         nrodrig1.admin_users_permission = True
-        sess.commit()
+        # sess.commit()
         flash("nrodrig1@gmail updated to admin", "success")
     return redirect(url_for('bp_main.home'))
 
@@ -748,7 +751,7 @@ def delete_user(email):
 #     metadata = Base.metadata
 #     db_table_list = [table for table in metadata.tables.keys()]
 
-#     csv_dir_path = os.path.join(current_app.config.get('DB_ROOT'), 'db_backup')
+#     csv_dir_path = os.path.join(current_app.config.get('PROJECT_RESOURCES'), 'db_backup')
 
 #     if request.method == "POST":
 #         formDict = request.form.to_dict()
@@ -756,8 +759,8 @@ def delete_user(email):
 #         # print("formDict: ", formDict)
 
 #         # craete folder to save
-#         if not os.path.exists(os.path.join(os.environ.get('DB_ROOT'),"db_backup")):
-#             os.makedirs(os.path.join(os.environ.get('DB_ROOT'),"db_backup"))
+#         if not os.path.exists(os.path.join(os.environ.get('PROJECT_RESOURCES'),"db_backup")):
+#             os.makedirs(os.path.join(os.environ.get('PROJECT_RESOURCES'),"db_backup"))
 
 
 #         db_table_list = []
@@ -793,7 +796,7 @@ def delete_user(email):
 # @bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])
 # @login_required
 # def download_db_tables_as_csv():
-#     return send_from_directory(os.path.join(current_app.config['DB_ROOT']),'db_backup.zip', as_attachment=True)
+#     return send_from_directory(os.path.join(current_app.config['PROJECT_RESOURCES']),'db_backup.zip', as_attachment=True)
 
 
 
@@ -808,7 +811,7 @@ def delete_user(email):
 
 #     metadata = Base.metadata
 #     db_table_list = [table for table in metadata.tables.keys()]
-#     csv_dir_path_upload = os.path.join(current_app.config.get('DB_ROOT'), 'db_upload')
+#     csv_dir_path_upload = os.path.join(current_app.config.get('PROJECT_RESOURCES'), 'db_upload')
 
 #     if request.method == "POST":
 #         formDict = request.form.to_dict()
@@ -820,8 +823,8 @@ def delete_user(email):
 #         # print("requestFiles: ", requestFiles)
 
 #         # craete folder to store upload files
-#         if not os.path.exists(os.path.join(os.environ.get('DB_ROOT'),"db_upload")):
-#             os.makedirs(os.path.join(os.environ.get('DB_ROOT'),"db_upload"))
+#         if not os.path.exists(os.path.join(os.environ.get('PROJECT_RESOURCES'),"db_upload")):
+#             os.makedirs(os.path.join(os.environ.get('PROJECT_RESOURCES'),"db_upload"))
         
 
 #         csv_file_for_table = request.files.get('csv_table_upload')

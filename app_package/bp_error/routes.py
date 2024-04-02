@@ -1,12 +1,9 @@
 from flask import Blueprint
 from flask import render_template, current_app, request
-# from app_package.utils import logs_dir
 import os
-# import logging
-# from logging.handlers import RotatingFileHandler
 import jinja2
 import werkzeug
-from app_package._common.utilities import wrap_up_session, custom_logger
+from app_package._common.utilities import custom_logger
 
 logger_bp_error = custom_logger('bp_error.log')
 bp_error = Blueprint('bp_error', __name__)
@@ -55,20 +52,6 @@ if os.environ.get('WS_CONFIG_TYPE') in ['prod','dev']:
         error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
         return render_template('errors/error_template.html', error_number="502", error_message=error_message)
 
-
-    # @bp_error.app_errorhandler(AttributeError)
-    # @bp_error.app_errorhandler(KeyError)
-    # @bp_error.app_errorhandler(TypeError)
-    # @bp_error.app_errorhandler(FileNotFoundError)
-    # @bp_error.app_errorhandler(ValueError)
-    # # @bp_error.app_errorhandler(ZeroDivisionError)
-    # # def error_key(FileNotFoundError):
-    # def error_key(e):
-    #     # error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
-    #     error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
-    #     return render_template('errors/error_template_app_error.html', error_number="", error_message=e)
-
-
     @bp_error.app_errorhandler(jinja2.exceptions.TemplateNotFound)
     @bp_error.app_errorhandler(jinja2.exceptions.UndefinedError)
     @bp_error.app_errorhandler(werkzeug.routing.exceptions.BuildError)
@@ -94,3 +77,17 @@ if os.environ.get('WS_CONFIG_TYPE') in ['prod','dev']:
         # Return your custom error template and the status code
         return render_template('errors/error_template.html', error_code=error_code,error_type=error_type, 
             error_message=error_message), error_code
+
+
+    # @bp_error.app_errorhandler(AttributeError)
+    # @bp_error.app_errorhandler(KeyError)
+    # @bp_error.app_errorhandler(TypeError)
+    # @bp_error.app_errorhandler(FileNotFoundError)
+    # @bp_error.app_errorhandler(ValueError)
+    # # @bp_error.app_errorhandler(ZeroDivisionError)
+    # # def error_key(FileNotFoundError):
+    # def error_key(e):
+    #     # error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
+    #     error_message = f"Could be anything... ¯\_(ツ)_/¯  ... try again or send email to {current_app.config['MAIL_USERNAME']}."
+    #     return render_template('errors/error_template_app_error.html', error_number="", error_message=e)
+

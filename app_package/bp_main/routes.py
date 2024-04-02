@@ -1,13 +1,19 @@
 from flask import Blueprint
-from flask import render_template, current_app, send_from_directory
+from flask import render_template, current_app, send_from_directory, g
 import os
-from app_package._common.utilities import wrap_up_session, custom_logger
+from app_package._common.utilities import custom_logger
 from ws_utilities import create_df_from_db_table_name
-
+from ws_models import DatabaseSession
 
 logger_bp_main = custom_logger('bp_main.log')
 bp_main = Blueprint('bp_main', __name__)
 
+@bp_main.before_request
+def before_request():
+    print("-- def before_request() --")
+    # Assign a new session to a global `g` object, accessible during the whole request
+    g.db_session = DatabaseSession()
+    print("* created a g.db_session *")
 
 @bp_main.route("/", methods=["GET","POST"])
 def home():
