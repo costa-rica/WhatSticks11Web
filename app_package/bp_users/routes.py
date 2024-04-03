@@ -161,31 +161,31 @@ def reset_password():
         formDict = request.form.to_dict()
         logger_bp_users.info(f'formDict : {formDict}')
 
-        # new_user_obj = db_session.get(Users,user.id)
-        # hash_pw = bcrypt.hashpw(formDict.get('password_text').encode(), salt)
-        # new_user_obj.password = hash_pw
-        # # wrap_up_session(db_session, logger_bp_users)
-        # try:
-        #     # perform some database operations
-        #     db_session.commit()
-        #     logger_bp_users.info("- perfomed: sess.commit() -")
-        # except Exception as e:
-        #     db_session.rollback()  # Roll back the transaction on error
-        #     logger_bp_users.info("- perfomed: sess.rollback() -")
-        #     logger_bp_users.info(f"{type(e).__name__}: {e}")
-        #     raise
-        # finally:
-        #     db_session.close()  # Ensure the session is closed in any case
-        #     logger_bp_users.info("- perfomed: sess.close() -")
+        new_user_obj = db_session.get(Users,user.id)
+        hash_pw = bcrypt.hashpw(formDict.get('password_text').encode(), salt)
+        new_user_obj.password = hash_pw
+        # wrap_up_session(db_session, logger_bp_users)
+        try:
+            # perform some database operations
+            db_session.commit()
+            logger_bp_users.info("- perfomed: sess.commit() -")
+        except Exception as e:
+            db_session.rollback()  # Roll back the transaction on error
+            logger_bp_users.info("- perfomed: sess.rollback() -")
+            logger_bp_users.info(f"{type(e).__name__}: {e}")
+            raise
+        finally:
+            db_session.close()  # Ensure the session is closed in any case
+            logger_bp_users.info("- perfomed: sess.close() -")
 
 
 
-        base_url = api_url()
+        # base_url = api_url()
     
-        reset_pass_payload = {"password_text":formDict.get('password_text')}
-        headers = {'Content-Type':'application/json','x-access-token':token}
-        response_reset_pass = requests.request('POST',base_url + '/reset_password',headers=headers, json=reset_pass_payload)
-        response_reset_pass.status_code
+        # reset_pass_payload = {"password_text":formDict.get('password_text')}
+        # headers = {'Content-Type':'application/json','x-access-token':token}
+        # response_reset_pass = requests.request('POST',base_url + '/reset_password',headers=headers, json=reset_pass_payload)
+        # response_reset_pass.status_code
 
         # if response_reset_pass.status_code == 200:
         #     logger_bp_users.info(f'Refresh database here')
