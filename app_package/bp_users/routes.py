@@ -12,7 +12,8 @@ import os
 import json
 # from ws_models import sess, engine, text, Users
 from ws_models import engine, DatabaseSession, text, Users
-from app_package.bp_users.utils import  create_shortname_list, api_url
+from app_package.bp_users.utils import  create_shortname_list, api_url, \
+    send_reset_email
 import datetime
 import requests
 import zipfile
@@ -107,6 +108,8 @@ def logout():
 
 @bp_users.route('/request_reset_password', methods = ["GET", "POST"])
 def request_reset_password():
+    logger_bp_users.info(f'- in request_reset_password')
+    db_session = g.db_session
     page_name = 'Request Password Change'
     if current_user.is_authenticated:
         return redirect(url_for('bp_main.home'))
@@ -117,21 +120,21 @@ def request_reset_password():
         email = formDict.get('email')
         user = db_session.query(Users).filter_by(email=email).first()
         if user:
-        # send_reset_email(user)
-            # logger_bp_users.info('Email reaquested to reset: ', email)
-            # send_reset_email(user)
-            base_url = api_url()
-            # reset_pass_token_payload = {"email":email}
-            reset_pass_token_payload = {
-                "email":"nrodrig1@gmail.com",
-                "ws_api_password":current_app.config.get('WS_API_PASSWORD')
-                }
-            response_reset_pass_token = requests.request(
-                'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
-            response_reset_pass_token.status_code
+            send_reset_email(user)
+            # # logger_bp_users.info('Email reaquested to reset: ', email)
+            # # send_reset_email(user)
+            # base_url = api_url()
+            # # reset_pass_token_payload = {"email":email}
+            # reset_pass_token_payload = {
+            #     "email":"nrodrig1@gmail.com",
+            #     "ws_api_password":current_app.config.get('WS_API_PASSWORD')
+            #     }
+            # response_reset_pass_token = requests.request(
+            #     'GET',base_url + '/get_reset_password_token', json=reset_pass_token_payload)
+            # response_reset_pass_token.status_code
 
-            flash('Email has been sent with instructions to reset your password','info')
-            # return redirect(url_for('bp_users.login'))
+            # flash('Email has been sent with instructions to reset your password','info')
+            # # return redirect(url_for('bp_users.login'))
         else:
             flash('Email has not been registered with What Sticks','warning')
 
@@ -142,7 +145,7 @@ def request_reset_password():
 @bp_users.route('/reset_password', methods = ["GET", "POST"])
 def reset_password():
     logger_bp_users.info(f"- accessed: reset_password with token")
-
+    db_session = g.db_session
     # if current_user.is_authenticated:
     #     return redirect(url_for('bp_main.user_home'))
     token = request.args.get('token')
@@ -158,24 +161,43 @@ def reset_password():
         formDict = request.form.to_dict()
         logger_bp_users.info(f'formDict : {formDict}')
 
+        # new_user_obj = db_session.get(Users,user.id)
+        # hash_pw = bcrypt.hashpw(formDict.get('password_text').encode(), salt)
+        # new_user_obj.password = hash_pw
+        # # wrap_up_session(db_session, logger_bp_users)
+        # try:
+        #     # perform some database operations
+        #     db_session.commit()
+        #     logger_bp_users.info("- perfomed: sess.commit() -")
+        # except Exception as e:
+        #     db_session.rollback()  # Roll back the transaction on error
+        #     logger_bp_users.info("- perfomed: sess.rollback() -")
+        #     logger_bp_users.info(f"{type(e).__name__}: {e}")
+        #     raise
+        # finally:
+        #     db_session.close()  # Ensure the session is closed in any case
+        #     logger_bp_users.info("- perfomed: sess.close() -")
+
+
+
         base_url = api_url()
     
         reset_pass_payload = {"password_text":formDict.get('password_text')}
         headers = {'Content-Type':'application/json','x-access-token':token}
-        response_reset_pass = requests.request('GET',base_url + '/reset_password',headers=headers, json=reset_pass_payload)
+        response_reset_pass = requests.request('POST',base_url + '/reset_password',headers=headers, json=reset_pass_payload)
         response_reset_pass.status_code
 
-        if response_reset_pass.status_code == 200:
-            logger_bp_users.info(f'Refresh database here')
-            # # NOTE: I think this i unnecessary with the new db_session, before and teardown_appcontext implementation
-            # # Expire session so new data will take into effect when user logs in again
-            # sess.expire_all()
-            # sess.commit()
-            logout_user()
-            return redirect(url_for('bp_users.login'))
-
-        logger_bp_users.info(f'response_reset_pass.status_code: {response_reset_pass.status_code}')
-        logger_bp_users.info(f"password_text: {formDict.get('password_text')}")
+        # if response_reset_pass.status_code == 200:
+        #     logger_bp_users.info(f'Refresh database here')
+        #     # # NOTE: I think this i unnecessary with the new db_session, before and teardown_appcontext implementation
+        #     # # Expire session so new data will take into effect when user logs in again
+        #     # sess.expire_all()
+        #     # sess.commit()
+        #     logout_user()
+        #     return redirect(url_for('bp_users.login'))
+        return redirect(url_for('bp_users.login'))
+        # logger_bp_users.info(f'response_reset_pass.status_code: {response_reset_pass.status_code}')
+        # logger_bp_users.info(f"password_text: {formDict.get('password_text')}")
 
 
     return render_template('users/reset_request.html', token = token, page_name='Enter New Password')

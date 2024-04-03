@@ -1,5 +1,8 @@
 import os
 from app_package._common.utilities import custom_logger
+from flask_mail import Message
+from app_package import mail
+from flask import current_app, url_for
 
 logger_bp_users = custom_logger('bp_users.log')
 
@@ -28,3 +31,20 @@ def api_url():
             api_base_url = f"http://localhost:5001"
     
     return api_base_url
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    logger_bp_users.info(f"current_app.config.get(MAIL_USERNAME): {current_app.config.get('MAIL_USERNAME')}")
+    msg = Message('Password Reset Request',
+                  sender=current_app.config.get('MAIL_USERNAME'),
+                  recipients=[user.email])
+
+    long_f_string = (
+        "To reset your password, visit the following link:" +
+        f"\n {url_for('bp_users.reset_password', token=token, _external=True)} " +
+        "\n\n" +
+        "If you did not make this request, simply ignore this email and no changes will be made."
+    )
+    msg.body =long_f_string
+
+    mail.send(msg)
