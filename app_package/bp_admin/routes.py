@@ -1,7 +1,7 @@
 
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, \
-    abort, session, Response, current_app, send_from_directory, make_response
+    abort, session, Response, current_app, send_from_directory, make_response, g
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
 import logging
