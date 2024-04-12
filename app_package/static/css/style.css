@@ -1290,6 +1290,51 @@
   justify-content: space-evenly;
   padding-top: 1rem;
 }
+.admin_page .btn_manage_weather_hist {
+  background-color: var(--color_theme_blue);
+  border-width: 0.5rem;
+  color: var(--bs-gray-200);
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+.admin_page .add_bottom_margin {
+  margin-bottom: 3rem;
+}
+
+.weather_history_admin_page {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.weather_history_admin_page .std_frame_light_gray {
+  background-color: var(--color-gray02);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+.weather_history_admin_page .col_1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 80%;
+}
+.weather_history_admin_page .title_custom {
+  display: flex;
+  color: var(--color_text_white);
+}
+.weather_history_admin_page .add_bottom_margin {
+  margin-bottom: 3rem;
+}
+.weather_history_admin_page .element_right {
+  display: flex;
+  justify-content: flex-end;
+}
+.weather_history_admin_page .request_weather_date_options {
+  padding-top: 1rem;
+  padding-left: 3rem;
+}
 
 /* Admin Db Download Page */
 .admin_db_download_page {

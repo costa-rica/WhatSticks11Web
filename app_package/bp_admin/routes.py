@@ -8,15 +8,19 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import json
-from ws_models import Base, engine, DatabaseSession, text, Users
+from ws_models import Base, engine, DatabaseSession, text, Users, \
+    WeatherHistory, Locations
 from app_package.bp_admin.utils import get_user_loc_day_tuple
 import pandas as pd
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 import openpyxl
 import zipfile
 from ws_utilities import create_df_crosswalk, update_and_append_user_location_day, \
     update_and_append_via_df_crosswalk_users, update_and_append_via_df_crosswalk_locations
+
+from ws_utilities import create_df_from_db_table_name, request_visual_crossing_for_one_day, \
+    request_visual_crossing_for_last_30days, add_weather_history
 
 from app_package._common.utilities import custom_logger
 
@@ -30,10 +34,19 @@ bp_admin = Blueprint('bp_admin', __name__)
 def before_request():
     logger_bp_admin.info(f"- in before_request route --")
     g.db_session = DatabaseSession()
+
+    if request.referrer:
+        logger_bp_admin.info(f"- request.referrer: {request.referrer} ")
+    
+    logger_bp_admin.info(f"- db_session ID: {id(g.db_session)} ")
+    
+    if request.endpoint:
+        logger_bp_admin.info(f"- request.endpoint: {request.endpoint} ")
+
+    
     # TEMPORARILY_DOWN: redirects to under construction page #
     if os.environ.get('TEMPORARILY_DOWN') == '1':
         if request.url != request.url_root + url_for('bp_main.temporarily_down')[1:]:
-            # logger_bp_users.info("*** (logger_bp_users) Redirected ")
             logger_bp_admin.info(f'- request.referrer: {request.referrer}')
             logger_bp_admin.info(f'- request.url: {request.url}')
             return redirect(url_for('bp_main.temporarily_down'))
@@ -485,6 +498,111 @@ def delete_user(email):
     # return redirect(request.url)
 
 
+@bp_admin.route("/weather_history_admin", methods=["GET","POST"])
+@login_required
+def weather_history_admin():
+    logger_bp_admin.info(f'- in weather_history_admin ')
+    db_session = g.db_session
+    if not current_user.admin_users_permission:
+        return redirect(url_for('bp_main.home'))
+
+    # Get each weather history record
+    df_weather_history = create_df_from_db_table_name("weather_history")
+    df_locations = create_df_from_db_table_name("locations")
+    df_locations.rename(columns={'id': 'location_id'}, inplace=True)
+    df_weather_hist_with_locations = pd.merge(df_weather_history,
+                                          df_locations[["location_id","city","country"]],
+                                          on=["location_id"],how="left")
+    df_weather_hist_with_locations["date_time_obj"] = pd.to_datetime(df_weather_hist_with_locations.date_time, format="%Y-%m-%d")
+    df_sorted = df_weather_hist_with_locations.sort_values(by='date_time_obj', ascending=False)
+    dict_sorted = df_sorted.to_dict('records')
+
+    col_names = ["date", "location_id", "city","temp"]
+
+    # Get cities
+    # create GROUPBY dataframe with city location_id and count
+    df_city_location_counts = df_weather_hist_with_locations.groupby(['city', 'location_id']).size().reset_index(name='count')
+    dict_city_location_counts = df_city_location_counts.to_dict('records')
+
+    if request.method == "POST":
+        formDict = request.form.to_dict()
+        logger_bp_admin.info(f"formDict: {formDict}")
+        # add_location_weather_history = formDict.get("location_add_weather_history")
+        # add_location_weather_history_date = formDict.get("weather_hist_date")
+        add_weather_hist_location = formDict.get("add_weather_hist_location")# in the form <location_id: city>
+        if add_weather_hist_location:
+            print("**** getting id ******")
+            print("**** getting id ******")
+
+            add_weather_hist_location_id = add_weather_hist_location[:add_weather_hist_location.find(":")]
+            print(f"**** add_weather_hist_location_id: {add_weather_hist_location_id} ******")
+            print("**** getting id ******")
+        
+        add_weather_hist_location_date_option = formDict.get("add_weather_hist_location_date_option")
+        add_weather_hist_location_date = formDict.get("add_weather_hist_location_date")
+        weather_record_id = formDict.get("delete_weather_record_id")
+        weather_hist_location_id = formDict.get("delete_weather_record_from_location_id")
+
+        if add_weather_hist_location:
+            location_to_add_weather = db_session.get(Locations, add_weather_hist_location_id)
+            
+            if add_weather_hist_location_date_option == "yesterday":
+                yesterday_date = datetime.utcnow()  - timedelta(days=1)
+                vc_weather_dict = request_visual_crossing_for_one_day(
+                    location_to_add_weather,yesterday_date.strftime('%Y-%m-%d'))
+                add_weather_history(db_session, add_weather_hist_location_id, vc_weather_dict)
+                days_added = "ONE RECORD"
+
+            elif add_weather_hist_location_date_option == "last_thirty_days":
+                vc_weather_dict = request_visual_crossing_for_last_30days(location_to_add_weather)
+                days_added = "30 RECORDS"
+                add_weather_history(db_session, add_weather_hist_location_id, vc_weather_dict)
+
+            elif add_weather_hist_location_date_option == "specific_date":
+                vc_weather_dict = request_visual_crossing_for_one_day(location_to_add_weather,add_weather_hist_location_date)
+                days_added = "ONE RECORD"
+                add_weather_history(db_session, add_weather_hist_location_id, vc_weather_dict)
+            else:
+                days_added = "NONE"
+
+            long_f_string = (
+                f"Added {days_added} for \n" +
+                f"id:{location_to_add_weather.id}, city: {location_to_add_weather.city} "
+            )
+            flash_banner_color = "success"
+
+        elif weather_record_id:
+            weather_record = db_session.get(WeatherHistory, weather_record_id)
+            weather_record_city = db_session.get(Locations, weather_record.location_id).city
+            db_session.query(WeatherHistory).filter_by(id=weather_record_id).delete()
+            long_f_string = (
+                f"Deleted ONE RECORD for \n" +
+                f"id:{weather_record_id}, city: {weather_record_city} "
+            )
+            flash_banner_color = "warning"
+
+        elif weather_hist_location_id:
+            # weather_record = db_session.get(WeatherHistory, weather_record_id)
+            # weather_record_city = db_session.get(Locations, weather_record.location_id).city
+            city_name = db_session.get(Locations,weather_hist_location_id).city
+            db_session.query(WeatherHistory).filter_by(location_id=weather_hist_location_id).delete()
+            long_f_string = (
+                f"Deleted ALL RECORDS for \n" +
+                f"location_id: {weather_hist_location_id}; city: {city_name}"
+            )
+            flash_banner_color = "warning"
+        
+        else:
+            long_f_string = (
+                f"No records affected"
+            )
+            flash_banner_color = "warning"
+
+        flash( long_f_string, flash_banner_color)
+        return redirect(request.referrer)
+
+    return render_template('admin/weather_history_admin.html', col_names = col_names,
+            dict_weather_hist_with_locations = dict_sorted, dict_city_location_counts = dict_city_location_counts)
 
 
 

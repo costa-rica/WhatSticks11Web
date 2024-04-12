@@ -8,6 +8,21 @@ from app_package._common.utilities import custom_logger
 logger_bp_error = custom_logger('bp_error.log')
 bp_error = Blueprint('bp_error', __name__)
 
+
+@bp_error.before_request
+def before_request():
+    logger_bp_error.info(f"- in def before_request() -")
+    if request.referrer:
+        logger_bp_error.info(f"- request.referrer: {request.referrer} ")
+    
+    db_session = g.pop('db_session', None)
+    if db_session is not None:
+        logger_bp_error.info(f"- db_session ID: {id(g.db_session)} ")
+    
+    if request.endpoint:
+        logger_bp_error.info(f"- request.endpoint: {request.endpoint} ")
+
+
 if os.environ.get('WS_CONFIG_TYPE') in ['prod','dev']:
     @bp_error.app_errorhandler(400)
     def handle_400(err):

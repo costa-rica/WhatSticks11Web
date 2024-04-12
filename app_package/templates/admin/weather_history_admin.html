@@ -1,0 +1,180 @@
+{% extends "_layout.html" %}
+{% block main %}
+<form method="POST" id="form_1" ></form>
+<form method="POST" id="form_2" ></form>
+<form method="POST" id="form_3" ></form>
+
+
+
+<div class="weather_history_admin_page">
+    <!-- <div class="container"> -->
+    <div class="col_1">
+        <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
+
+
+        <div class="title_custom">
+            <h1>Admin Weather History Records</h1>
+            <div id="small_screen_logo">
+                <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}" />
+            </div>
+        </div>
+
+        <div class="std_frame_light_gray ">
+            <h3>Add Weather History</h3>
+            Enter a location_id and date to test adding weather History
+            <input type="text" class="text_input_wide" name="add_weather_hist_location"  list="locations_list" form="form_1" required >
+            <datalist id="locations_list">
+                {% for i in dict_city_location_counts %}
+                <option >{{ i.location_id }}: {{ i.city }} </option>
+                {% endfor %}
+            </datalist>
+            <br>
+            <div class="request_weather_date_options">
+              <label>
+                <input type="radio" name="add_weather_hist_location_date_option" value="yesterday" form="form_1" checked> Request yesterday
+            </label>
+            <br>
+              <label>
+                <input type="radio" name="add_weather_hist_location_date_option" value="last_thirty_days" form="form_1" > Request last thirty days
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="add_weather_hist_location_date_option" value="specific_date" form="form_1"> Request specific date
+            </label>
+            </div>
+
+            <div id="specific_date_picker"  class="pick_weather_date" style="display: none;">
+              <label for="add_weather_hist_location_date">Choose date:</label>
+              <input type="date" id="add_weather_hist_location_date" name="add_weather_hist_location_date" form="form_1">
+            </div>
+
+
+            <br>
+            <div class = "element_right">
+              <button class="btn btn-primary " form="form_1" name="add_weather_history">Add weather history </button>
+            </div>
+
+        </div>
+
+        <div class="std_frame_light_gray ">
+            <h3>Weather History Summary</h3>
+
+            <div class="table_div">
+                <table id="weatherHistorySummaryTable" class="display table nowrap responsive table-secondary">
+                  <thead>
+                    
+                    <tr>
+                      <th>location_id</th>
+                      <th>city</th>
+                      <th>count</th>
+                      <th></th>
+                    </tr>
+            
+                  </thead>
+                  <tbody>
+                    {% for row in dict_city_location_counts %}
+                    <tr>
+                      <th>{{ row.location_id }}</th>
+                      <th>{{ row.city }}</th>
+                      <th>{{ row.count }}</th>
+                      <th><button class="btn btn-warning " form="form_2" name="delete_weather_record_from_location_id"
+                        value="{{ row.location_id }}"
+                        >Delete all </button></th>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            
+                </table>
+              </div>
+
+
+
+        </div><!-- std_frame_light_gray: Weather History Summary -->
+
+        <div class="std_frame_light_gray add_bottom_margin">
+            <h3>Weather History Records</h3>
+            <div class="download_db_tables_form">
+
+                <!-- <div class="home_sub"> -->
+
+                    <div class="table_div">
+                        <table id="myTable" class="display table nowrap responsive table-secondary">
+                          <thead>
+                            
+                            <tr>
+                              {% for name in col_names %}
+                              <th>{{ name }}</th>
+                              {% endfor %}
+                              <th></th>
+                            </tr>
+                    
+                          </thead>
+                          <tbody>
+                            {% for row in dict_weather_hist_with_locations %}
+                            <tr>
+                              <th>{{ row.date_time }}</th>
+                              <th>{{ row.location_id }}</th>
+                              <th>{{ row.city }}</th>
+                              <th>{{ row.temp }}</th>
+                              <th><button class="btn btn-warning " form="form_3" name="delete_weather_record_id"
+                                value={{row.id}}
+                                >Delete Record</button></th>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                    
+                        </table>
+                      </div>
+
+
+                <!-- </div> -->
+
+            </div><!-- download_db_tables_form -->
+        </div><!-- std_frame_light_gray: Weather History Records -->
+
+
+
+
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#myTable').DataTable({
+            "order": [] // This disables initial sorting
+        });
+    } );
+</script>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#weatherHistorySummaryTable').DataTable({
+            "order": [] // This disables initial sorting
+        });
+    } );
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const radios = document.querySelectorAll('input[name="add_weather_hist_location_date_option"]');
+    const dateDiv = document.getElementById('specific_date_picker');
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'specific_date') {
+                dateDiv.style.display = 'block';
+            } else {
+                dateDiv.style.display = 'none';
+            }
+        });
+    });
+});
+
+
+
+</script>
+
+
+{% endblock %}
+
+

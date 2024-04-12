@@ -20,18 +20,6 @@ def load_user(user_id):
     print("* created a g.db_session *")
     return user
 
-def teardown_appcontext(exception=None):
-    print("- in teardown_appcontext")
-    db_session = g.pop('db_session', None)
-    if db_session is not None:
-        if exception is None:
-            db_session.commit()
-        else:
-            db_session.rollback()
-        print("----- db_session.close() -----")
-        db_session.close()
-
-
 def custom_logger(logger_filename):
     """
     Creates and configures a logger with both file and stream handlers, while ensuring
@@ -91,6 +79,24 @@ def custom_logger_init():
     logging.getLogger('werkzeug').addHandler(file_handler)
 
     return logger_init
+
+logger_teardown_appcontext = custom_logger("logger_teardown_appcontext.log")
+
+def teardown_appcontext(exception=None):
+    db_session = g.pop('db_session', None)
+    if db_session is not None:
+        logger_teardown_appcontext.info(f"- db_session ID: {id(db_session)} ")
+        if exception is None:
+            db_session.commit()
+            logger_teardown_appcontext.info(f"- teardown commit -")
+        else:
+            db_session.rollback()
+            logger_teardown_appcontext.info(f"- teardown rollback -")
+        logger_teardown_appcontext.info("- db_session.close() -")
+        db_session.close()
+
+
+
 
 # timezone 
 def timetz(*args):

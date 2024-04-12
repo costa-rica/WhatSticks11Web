@@ -1,5 +1,6 @@
 from flask import Blueprint
-from flask import render_template, current_app, send_from_directory, g
+from flask import render_template, current_app, send_from_directory, g, \
+    request
 import os
 from app_package._common.utilities import custom_logger
 from ws_utilities import create_df_from_db_table_name
@@ -10,10 +11,19 @@ bp_main = Blueprint('bp_main', __name__)
 
 @bp_main.before_request
 def before_request():
-    print("-- def before_request() --")
+
     # Assign a new session to a global `g` object, accessible during the whole request
     g.db_session = DatabaseSession()
-    print("* created a g.db_session *")
+
+
+    if request.referrer:
+        logger_bp_main.info(f"- request.referrer: {request.referrer} ")
+    
+    logger_bp_main.info(f"- db_session ID: {id(g.db_session)} ")
+    
+    if request.endpoint:
+        logger_bp_main.info(f"- request.endpoint: {request.endpoint} ")
+
 
 @bp_main.route("/", methods=["GET","POST"])
 def home():
