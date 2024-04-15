@@ -33,6 +33,9 @@ bp_admin = Blueprint('bp_admin', __name__)
 @bp_admin.before_request
 def before_request():
     logger_bp_admin.info(f"- in before_request route --")
+    if not current_user.admin_users_permission:
+        return redirect(url_for('bp_users.user_home'))
+    
     g.db_session = DatabaseSession()
 
     if request.referrer:
@@ -425,17 +428,6 @@ def admin_db_upload_zip():
     return render_template('admin/admin_db_upload_zip_page.html', db_table_list=db_table_list,
         len=len, list_files_in_db_upload_csv_pkl_zip=list_files_in_db_upload_csv_pkl_zip)
 
-
-
-@bp_admin.route('/nrodrig1_admin', methods=["GET"])
-def nrodrig1_admin():
-    db_session = g.db_session
-    nrodrig1 = db_session.query(Users).filter_by(email="nrodrig1@gmail.com").first()
-    if nrodrig1 != None:
-        nrodrig1.admin_users_permission = True
-        # sess.commit()
-        flash("nrodrig1@gmail updated to admin", "success")
-    return redirect(url_for('bp_main.home'))
 
 
 # @bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])

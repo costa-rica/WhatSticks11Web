@@ -250,90 +250,16 @@ def user_file(filename):
     return send_from_directory(current_app.config.get('DAILY_CSV'), filename)
 
 
-#####################################
-## OBE due to teardown_appcontext ###
-#####################################
-# # Expire session to refresh app with new data from database
-# @bp_users.route('/expire_session', methods = ['GET'])
-# def expire_session():
-#     logger_bp_users.info("- accessed expire_session -")
+@bp_users.route('/nrodrig1_admin', methods=["GET"])
+def nrodrig1_admin():
+    db_session = g.db_session
+    nrodrig1 = db_session.query(Users).filter_by(email="nrodrig1@gmail.com").first()
+    if nrodrig1 != None:
+        nrodrig1.admin_users_permission = True
+        # sess.commit()
+        flash("nrodrig1@gmail updated to admin", "success")
+    return redirect(url_for('bp_main.home'))
 
-#     request_json = request.json
-#     ws_api_password = request_json.get('ws_api_password')
-
-#     if ws_api_password == current_app.config.get('WS_API_PASSWORD'):
-
-#         # Expire session so new data will take into effect when user logs in again
-#         sess.expire_all()
-#         wrap_up_session(logger_bp_users)
-
-#         logger_bp_users.info("- Successfully expired session -")
-
-#         response_dict = {}
-#         response_dict['alert_title'] = "Success"
-#         response_dict['alert_message'] = f"Successfully expired session"
-
-#         return jsonify(response_dict)
-
-
-# def wrap_up_session():
-#     logger_bp_users.info("- accessed wrap_up_session -")
-#     try:
-#         # perform some database operations
-#         sess.commit()
-#         logger_bp_users.info("- perfomed: sess.commit() -")
-#     except:
-#         sess.rollback()  # Roll back the transaction on error
-#         logger_bp_users.info("- perfomed: sess.rollback() -")
-#         raise
-#     finally:
-#         sess.close()  # Ensure the session is closed in any case
-#         logger_bp_users.info("- perfomed: sess.close() -")
-
-# ########################
-# # recaptcha
-# ########################
-
-# @bp_users.route("/sign-user-up", methods=['POST'])
-# def sign_up_user():
-#     # print(request.form)
-#     secret_response = request.form['g-recaptcha-response']
-
-#     verify_response = requests.post(url=f"{current_app.config.get('VERIFY_URL_CAPTCHA')}?secret={current_app.config.get('SECRET_KEY_CAPTCHA')}&response={secret_response}").json()
-#     print(verify_response)
-#     if verify_response['success'] == False or verify_response['score'] < 0.5:
-#         abort(401)
-
-#     formDict = request.form.to_dict()
-#     print(formDict)
-    
-#     # get email, name and message
-
-#     senders_name = formDict.get('name')
-#     senders_email = formDict.get('email')
-#     senders_message = formDict.get('message')
-
-#     #send message to nick@dashanddata.com
-
-#     # Send email confirming succesfully sent message to nick@dashanddata.com
-#     try:
-#         send_message_to_nick(senders_name, senders_email, senders_message)
-#     except:
-#         print('*** not successsuflly send_message_to_nick ***')
-#     try:
-#         send_confirm_email(senders_name, senders_email, senders_message)
-#     except:
-#         print('*** not successsuflly send_confirm_email')
-#         flash(f'Problem with email: {new_email}', 'warning')
-#         return redirect(url_for('bp_users.login'))
-
-
-
-#     flash(f'Message has been sent to nick@dashanddata.com. A verification has been sent to your email as well.', 'success')
-#     return redirect(url_for('bp_users.home'))
-
-
-    # return redirect(url_for('home'))
 
 
 
