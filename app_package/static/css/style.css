@@ -1098,6 +1098,9 @@
   width: 100%;
   padding-top: 1rem;
 }
+.user_home_page .gray-font {
+  color: var(--color-gray04);
+}
 
 @media screen and (min-width: 768px) {
   .home_page {

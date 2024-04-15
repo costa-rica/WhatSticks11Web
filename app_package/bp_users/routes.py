@@ -18,6 +18,8 @@ import datetime
 import requests
 import zipfile
 from app_package._common.utilities import custom_logger
+from ws_utilities import create_dashboard_table_object_json_file, \
+    create_data_source_object_json_file
 
 
 logger_bp_users = custom_logger('bp_users.log')
@@ -217,28 +219,39 @@ def user_home():
     user_files_list_shortname = create_shortname_list(user_files_list, current_user.id)
     
     if request.method == 'POST':
-        # Get the directory where the CSV files are stored
-        csv_directory = current_app.config.get('DAILY_CSV')
+        formDict = request.form.to_dict()
+        logger_bp_users.info(f'formDict : {formDict}')
 
-        # Define the zip file name based on the current user's ID
-        zip_file_name = f"user_{current_user.id:04}_files.zip"
-        zip_file_path = os.path.join(csv_directory, zip_file_name)
+        if formDict.get("btn_download_files"):
+            logger_bp_users.info(f'- Selected btn_download_files -')
+            # Get the directory where the CSV files are stored
+            csv_directory = current_app.config.get('DAILY_CSV')
 
-        # Create a zip file in write mode
-        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-            # Loop through each file in the directory
-            for folder_name, subfolders, filenames in os.walk(csv_directory):
-                for filename in filenames:
-                    # Check if the current file is in the user's file list
-                    if filename in user_files_list:
-                        # Create the full path to the file
-                        file_path = os.path.join(folder_name, filename)
-                        # Add the file to the zip archive
-                        zipf.write(file_path, os.path.relpath(file_path, csv_directory))
-    
-        # After zipping, send the file to the client
-        # return send_file(zip_file_path, as_attachment=True, attachment_filename=zip_file_name)
-        return send_file(zip_file_path, as_attachment=True)
+            # Define the zip file name based on the current user's ID
+            zip_file_name = f"user_{current_user.id:04}_files.zip"
+            zip_file_path = os.path.join(csv_directory, zip_file_name)
+
+            # Create a zip file in write mode
+            with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+                # Loop through each file in the directory
+                for folder_name, subfolders, filenames in os.walk(csv_directory):
+                    for filename in filenames:
+                        # Check if the current file is in the user's file list
+                        if filename in user_files_list:
+                            # Create the full path to the file
+                            file_path = os.path.join(folder_name, filename)
+                            # Add the file to the zip archive
+                            zipf.write(file_path, os.path.relpath(file_path, csv_directory))
+        
+            # After zipping, send the file to the client
+            return send_file(zip_file_path, as_attachment=True)
+
+        elif formDict.get("btn_recalculate_dashboard"):
+            logger_bp_users.info(f'- Selected btn_recalculate_dashboard -')
+            create_data_source_object_json_file(current_user.id)
+            create_dashboard_table_object_json_file(current_user.id)
+            if request.referrer:
+                return redirect(request.referrer)
 
     return render_template('users/user_home.html', user_files_list=user_files_list, len=len,
         user_files_list_shortname=user_files_list_shortname, zip=zip)

@@ -1,6 +1,7 @@
 {% extends "_layout.html" %}
 {% block main %}
 <form method="POST" id="form_download_db" enctype=multipart/form-data></form>
+<form method="POST" id="form_recalculate_dash" enctype=multipart/form-data></form>
 
 <div class="user_home_page">
 
@@ -26,16 +27,29 @@
             </ul>
         </div><!-- paragraph_privacy -->
 
-
         <div class="std_frame_light_gray">
             <div class="">
                 These files represent the data used to calculate your latest dashboard correlations.
                 <div class="element_to_right">
-                    <button type="submit" name="download_files" value="zip_file" class="btn btn-primary"
+                    <button type="submit" name="btn_download_files" value="zip_file" class="btn btn-primary"
                     form="form_download_db">Download Zip</button>
                 </div>
+            </div>
+        </div><!-- std_frame_light_gray -->
 
-
+        <div class="std_frame_light_gray">
+            <div class="">
+                Recalculate your iPhone dashboard.
+                <br>
+                <p class="gray-font">
+                The primary reason for this is if you think you have added new data and the calculations on your iPhone are not consistent with your new data.
+                Recalculating will redo the calculations that show up on your iPhone app. 
+                Also, if there are changes the will reflect in the data files on this page.
+                </p>
+                <div class="element_to_right">
+                    <button type="submit" name="btn_recalculate_dashboard" value="dashboard" class="btn btn-primary"
+                    form="form_recalculate_dash">Recalculate Dashboard</button>
+                </div>
             </div>
         </div><!-- std_frame_light_gray -->
         {% else %}
