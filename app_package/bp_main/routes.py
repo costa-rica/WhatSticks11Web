@@ -24,6 +24,12 @@ def before_request():
     if request.endpoint:
         logger_bp_main.info(f"- request.endpoint: {request.endpoint} ")
 
+@bp_main.after_request
+def after_request(response):
+    logger_bp_main.info(f"---- after_request --- ")
+    if hasattr(g, 'db_session'):
+        wrap_up_session(logger_bp_main, g.db_session)
+    return response
 
 @bp_main.route("/", methods=["GET","POST"])
 def home():

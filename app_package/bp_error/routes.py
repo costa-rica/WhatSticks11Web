@@ -22,6 +22,13 @@ def before_request():
     if request.endpoint:
         logger_bp_error.info(f"- request.endpoint: {request.endpoint} ")
 
+@bp_error.after_request
+def after_request(response):
+    logger_bp_error.info(f"---- after_request --- ")
+    if hasattr(g, 'db_session'):
+        wrap_up_session(logger_bp_error, g.db_session)
+    return response
+
 
 if os.environ.get('WS_CONFIG_TYPE') in ['prod','dev']:
     @bp_error.app_errorhandler(400)

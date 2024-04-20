@@ -5,9 +5,6 @@ from flask import render_template, url_for, redirect, flash, request, \
     send_file, jsonify, g
 import bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
-# import logging
-# from logging.handlers import RotatingFileHandler
-from app_package._common.utilities import custom_logger
 import os
 import json
 # from ws_models import sess, engine, text, Users
@@ -17,7 +14,7 @@ from app_package.bp_users.utils import  create_shortname_list, api_url, \
 import datetime
 import requests
 import zipfile
-from app_package._common.utilities import custom_logger
+from app_package._common.utilities import custom_logger, wrap_up_session
 from ws_utilities import create_dashboard_table_object_json_file, \
     create_data_source_object_json_file
 
@@ -28,6 +25,7 @@ bp_users = Blueprint('bp_users', __name__)
 
 @bp_users.before_request
 def before_request():
+    logger_bp_users.info(f"---- before_request --- ")
     # Assign a new session to a global `g` object, accessible during the whole request
     g.db_session = DatabaseSession()
     if request.referrer:
@@ -38,6 +36,13 @@ def before_request():
     if request.endpoint:
         logger_bp_users.info(f"- request.endpoint: {request.endpoint} ")
 
+@bp_users.after_request
+def after_request(response):
+    logger_bp_users.info(f"---- after_request --- ")
+    if hasattr(g, 'db_session'):
+        wrap_up_session(logger_bp_users, g.db_session)
+    return response
+
 @bp_users.route('/login', methods = ['GET', 'POST'])
 def login():
     logger_bp_users.info('- in login -')
@@ -46,7 +51,9 @@ def login():
         return redirect(url_for('bp_users.user_home'))
 
     page_name = 'Login'
+    
     if request.method == 'POST':
+        # db_session = g.db_session
         formDict = request.form.to_dict()
         logger_bp_users.info(f"formDict: {formDict}")
         email = formDict.get('email')
@@ -60,6 +67,7 @@ def login():
             if password:
                 if bcrypt.checkpw(password.encode(), user.password.encode()):
                     login_user(user)
+                    
                     return redirect(url_for('bp_users.user_home'))
                 else:
                     flash('Password or email incorrectly entered', 'warning')
@@ -68,14 +76,16 @@ def login():
         else:
             flash('No user by that name', 'warning')
 
-
+    # wrap_up_session(logger_bp_users, db_session)
     return render_template('users/login.html', page_name = page_name)
 
 @bp_users.route('/register', methods = ['GET', 'POST'])
 def register():
+    db_session = g.db_session
     if current_user.is_authenticated:
         return redirect(url_for('bp_main.user_home'))
     page_name = 'Register'
+
     if request.method == 'POST':
         formDict = request.form.to_dict()
         new_email = formDict.get('email')
@@ -106,7 +116,7 @@ def register():
         login_user(new_user)
         flash(f'Succesfully registered: {new_email}', 'info')
         return redirect(url_for('bp_main.home'))
-
+    wrap_up_session(logger_bp_users, db_session)
     return render_template('users/register.html', page_name = page_name)
 
 @bp_users.route('/logout')

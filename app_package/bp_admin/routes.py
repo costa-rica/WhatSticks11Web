@@ -54,6 +54,14 @@ def before_request():
             logger_bp_admin.info(f'- request.url: {request.url}')
             return redirect(url_for('bp_main.temporarily_down'))
 
+
+@bp_admin.after_request
+def after_request(response):
+    logger_bp_admin.info(f"---- after_request --- ")
+    if hasattr(g, 'db_session'):
+        wrap_up_session(logger_bp_admin, g.db_session)
+    return response
+
 @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
 @login_required
 def admin_page():
