@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import render_template, current_app, send_from_directory, g, \
     request
 import os
-from app_package._common.utilities import custom_logger
+from app_package._common.utilities import custom_logger, wrap_up_session
 from ws_utilities import create_df_from_db_table_name
 from ws_models import DatabaseSession
 

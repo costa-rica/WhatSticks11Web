@@ -3,7 +3,7 @@ from flask import render_template, current_app, request
 import os
 import jinja2
 import werkzeug
-from app_package._common.utilities import custom_logger
+from app_package._common.utilities import custom_logger, wrap_up_session
 
 logger_bp_error = custom_logger('bp_error.log')
 bp_error = Blueprint('bp_error', __name__)

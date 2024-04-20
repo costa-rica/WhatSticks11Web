@@ -96,8 +96,6 @@ def teardown_appcontext(exception=None):
         db_session.close()
 
 
-
-
 # timezone 
 def timetz(*args):
     return datetime.now(timezone('Europe/Paris') ).timetuple()

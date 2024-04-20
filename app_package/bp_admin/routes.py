@@ -18,11 +18,9 @@ import openpyxl
 import zipfile
 from ws_utilities import create_df_crosswalk, update_and_append_user_location_day, \
     update_and_append_via_df_crosswalk_users, update_and_append_via_df_crosswalk_locations
-
 from ws_utilities import create_df_from_db_table_name, request_visual_crossing_for_one_day, \
     request_visual_crossing_for_last_30days, add_weather_history
-
-from app_package._common.utilities import custom_logger
+from app_package._common.utilities import custom_logger, wrap_up_session
 
 
 logger_bp_admin = custom_logger('bp_admin.log')
