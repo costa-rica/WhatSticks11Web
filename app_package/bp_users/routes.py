@@ -23,25 +23,6 @@ logger_bp_users = custom_logger('bp_users.log')
 salt = bcrypt.gensalt()
 bp_users = Blueprint('bp_users', __name__)
 
-@bp_users.before_request
-def before_request():
-    logger_bp_users.info(f"---- before_request --- ")
-    # Assign a new session to a global `g` object, accessible during the whole request
-    g.db_session = DatabaseSession()
-    if request.referrer:
-        logger_bp_users.info(f"- request.referrer: {request.referrer} ")
-    
-    logger_bp_users.info(f"- db_session ID: {id(g.db_session)} ")
-    
-    if request.endpoint:
-        logger_bp_users.info(f"- request.endpoint: {request.endpoint} ")
-
-@bp_users.after_request
-def after_request(response):
-    logger_bp_users.info(f"---- after_request --- ")
-    if hasattr(g, 'db_session'):
-        wrap_up_session(logger_bp_users, g.db_session)
-    return response
 
 @bp_users.route('/login', methods = ['GET', 'POST'])
 def login():

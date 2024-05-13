@@ -34,15 +34,15 @@ def before_request():
     if not current_user.admin_users_permission:
         return redirect(url_for('bp_users.user_home'))
     
-    g.db_session = DatabaseSession()
+    # g.db_session = DatabaseSession()
 
-    if request.referrer:
-        logger_bp_admin.info(f"- request.referrer: {request.referrer} ")
+    # if request.referrer:
+    #     logger_bp_admin.info(f"- request.referrer: {request.referrer} ")
     
-    logger_bp_admin.info(f"- db_session ID: {id(g.db_session)} ")
+    # logger_bp_admin.info(f"- db_session ID: {id(g.db_session)} ")
     
-    if request.endpoint:
-        logger_bp_admin.info(f"- request.endpoint: {request.endpoint} ")
+    # if request.endpoint:
+    #     logger_bp_admin.info(f"- request.endpoint: {request.endpoint} ")
 
     
     # TEMPORARILY_DOWN: redirects to under construction page #
@@ -53,12 +53,12 @@ def before_request():
             return redirect(url_for('bp_main.temporarily_down'))
 
 
-@bp_admin.after_request
-def after_request(response):
-    logger_bp_admin.info(f"---- after_request --- ")
-    if hasattr(g, 'db_session'):
-        wrap_up_session(logger_bp_admin, g.db_session)
-    return response
+# @bp_admin.after_request
+# def after_request(response):
+#     logger_bp_admin.info(f"---- after_request --- ")
+#     if hasattr(g, 'db_session'):
+#         wrap_up_session(logger_bp_admin, g.db_session)
+#     return response
 
 @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
 @login_required

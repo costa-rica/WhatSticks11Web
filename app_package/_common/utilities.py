@@ -80,20 +80,9 @@ def custom_logger_init():
 
     return logger_init
 
-logger_teardown_appcontext = custom_logger("logger_teardown_appcontext.log")
 
-def teardown_appcontext(exception=None):
-    db_session = g.pop('db_session', None)
-    if db_session is not None:
-        logger_teardown_appcontext.info(f"- db_session ID: {id(db_session)} ")
-        if exception is None:
-            db_session.commit()
-            logger_teardown_appcontext.info(f"- teardown commit -")
-        else:
-            db_session.rollback()
-            logger_teardown_appcontext.info(f"- teardown rollback -")
-        logger_teardown_appcontext.info("- db_session.close() -")
-        db_session.close()
+
+
 
 
 # timezone 
@@ -117,6 +106,23 @@ def wrap_up_session(custom_logger, db_session):
         db_session.close()  # Ensure the session is closed in any case
         custom_logger.info("- perfomed: sess.close() -")
 
+logger_request = custom_logger("logger_request.log")
 
+def before_request_custom():
+    # Each request will have access to a database session
+    g.db_session = DatabaseSession()
 
+def teardown_request(exception=None):
 
+    db_session = g.pop('db_session', None)
+    if db_session is not None:
+        logger_request.info(f"- db_session ID: {id(db_session)} ")
+        if exception is None:
+            db_session.commit()
+            logger_request.info(f"- teardown_request commit -")
+        else:
+            db_session.rollback()
+            logger_request.info(f"- teardown_request rollback -")
+        logger_request.info("- db_session.close() -")
+        
+        db_session.close()

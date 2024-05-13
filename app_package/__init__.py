@@ -9,7 +9,7 @@ from datetime import datetime
 # from ws_models import Base, engine, login_manager
 from ws_models import Base, engine
 from ._common.utilities import login_manager, custom_logger_init, \
-    teardown_appcontext
+    before_request_custom, teardown_request
 from flask_mail import Mail
 import secure
 
@@ -36,7 +36,10 @@ secure_headers = secure.Secure()
 
 def create_app(config_for_flask = config):
     app = Flask(__name__)
-    app.teardown_appcontext(teardown_appcontext)
+    # app.teardown_appcontext(teardown_appcontext)
+    
+    app.before_request(before_request_custom)
+    app.teardown_request(teardown_request)
     app.config.from_object(config_for_flask)
     login_manager.init_app(app)
     mail.init_app(app)

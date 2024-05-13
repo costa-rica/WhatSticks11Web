@@ -9,27 +9,27 @@ from ws_models import DatabaseSession
 logger_bp_main = custom_logger('bp_main.log')
 bp_main = Blueprint('bp_main', __name__)
 
-@bp_main.before_request
-def before_request():
+# @bp_main.before_request
+# def before_request():
 
-    # Assign a new session to a global `g` object, accessible during the whole request
-    g.db_session = DatabaseSession()
+#     # Assign a new session to a global `g` object, accessible during the whole request
+#     g.db_session = DatabaseSession()
 
 
-    if request.referrer:
-        logger_bp_main.info(f"- request.referrer: {request.referrer} ")
+#     if request.referrer:
+#         logger_bp_main.info(f"- request.referrer: {request.referrer} ")
     
-    logger_bp_main.info(f"- db_session ID: {id(g.db_session)} ")
+#     logger_bp_main.info(f"- db_session ID: {id(g.db_session)} ")
     
-    if request.endpoint:
-        logger_bp_main.info(f"- request.endpoint: {request.endpoint} ")
+#     if request.endpoint:
+#         logger_bp_main.info(f"- request.endpoint: {request.endpoint} ")
 
-@bp_main.after_request
-def after_request(response):
-    logger_bp_main.info(f"---- after_request --- ")
-    if hasattr(g, 'db_session'):
-        wrap_up_session(logger_bp_main, g.db_session)
-    return response
+# @bp_main.after_request
+# def after_request(response):
+#     logger_bp_main.info(f"---- after_request --- ")
+#     if hasattr(g, 'db_session'):
+#         wrap_up_session(logger_bp_main, g.db_session)
+#     return response
 
 @bp_main.route("/", methods=["GET","POST"])
 def home():
