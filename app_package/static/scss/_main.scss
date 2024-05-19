@@ -172,9 +172,21 @@
         padding:1rem;
         width:100%;
       }
+
     .std_frame_sub{
         padding: .5rem 0;
         color:var(--color_text_dark);
+    }    
+    .font_date{
+        font-size: small;
+    }
+    .font_highlight{
+        color:var(--color_theme_yellow);
+        background:black;
+        border-radius: 1rem;
+        padding: 0 .2rem;
+        margin-left: .5rem;
+        opacity:.5;
     }
     .element_padding{
         width:100%;

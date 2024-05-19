@@ -1013,6 +1013,17 @@
   padding: 0.5rem 0;
   color: var(--color_text_dark);
 }
+.about_page .font_date {
+  font-size: small;
+}
+.about_page .font_highlight {
+  color: var(--color_theme_yellow);
+  background: black;
+  border-radius: 1rem;
+  padding: 0 0.2rem;
+  margin-left: 0.5rem;
+  opacity: 0.5;
+}
 .about_page .element_padding {
   width: 100%;
   padding: 1rem 0 1rem 3rem;
