@@ -230,6 +230,11 @@
 
 
 .video_page{
+    display: flex;
+    flex-wrap: wrap;
+    padding-top:2rem;
+    justify-content: center;
+    align-items: center;
     .video-container {
         width: 100%;
         max-width: 480px; /* Optimized for mobile devices */
