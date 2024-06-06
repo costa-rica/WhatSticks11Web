@@ -1,0 +1,147 @@
+{% extends "_layout.html" %}
+{% block main %}
+<!-- <div class="main_super"> -->
+
+<div class="user_documentation_page">
+
+    <div class="col_1">
+        <!-- <div class="col_1_sub"> -->
+        <div class="title_custom">
+            <h1>What Sticks User CSV file Description</h1>
+            <div id="small_screen_logo">
+                <img class="img_logo" src="{{ url_for('bp_main.website_images', filename='wsLogo180noName.png') }}" />
+            </div>
+        </div>
+
+        <div class="std_frame_light_gray std_frame_fixed_size flex_center_vertically">
+            <div class="">
+                Last Updated: 6 June 2024
+            </div>
+        </div><!-- std_frame_light_gray -->
+
+
+
+        <h2 >Addressing sleep</h2>
+        <p class="paragraph_doc" >The
+        key here is sleep traverse days. There are two ways we measure it.</p>
+
+        <p class="paragraph_doc">First
+        (<b>sleep dependent)</b>, if we believe sleep is affected by
+        something we did during a day. We call this <i>sleep dependent</i>.
+        We can take the start time of any recorded sleep as the date, unless
+        it is the following day before 3pm. We are assuming 3pm as the latest
+        cut off where this sleeping in.</p>
+
+        <p class="paragraph_doc">Secondly
+        (<b>sleep independent</b>), if we believe other factors are the
+        result of sleep we take the sleep dependent date and subtract one
+        date so that the date is now n-1 and occurring before the factor we
+        believe to be depended on sleep.</p>
+
+        <h1 class="western">Key functions to produce daily metrics</h1>
+        <p class="paragraph_doc">get_dateUserTz_3pm()
+        </p>
+        <p class="paragraph_doc">If
+        the user’s sleep time is prior to 3pm it count for the previous
+        day.</p>
+        <p class="paragraph_doc">If
+        get_dateUserTz_3pm() is used then date values are changed to prior
+        date</p>
+
+        <h2 class="western">create_df_daily_sleep(df)
+        </h2>
+        <p class="paragraph_doc">When
+        this is used we are calculating a correlation that assumes <b>sleep
+        dependent</b>.</p>
+        <p class="paragraph_doc">This
+        function uses the user’s qty_cat_df and adjusts dates for sleep so
+        that any sleep time before 3pm is considered the previous night’s
+        sleep.</p>
+
+        <p class="paragraph_doc">This
+        allows for the sleep date to reflect sleep that happens that night.
+        In other words, any metrics for running, heart rate, temperature are
+        all occurring during or <i><u><b>before</b></u></i> the sleep that is
+        recorded in that date.</p>
+
+        <h2 class="western">create_df_n_minus1_daily_sleep(df_daily_sleep)</h2>
+        <p class="paragraph_doc">When
+        this is used we are calculating a correlation that assumes <b>sleep
+        independent</b>. This function uses the output of  create_df_daily_sleep(df)
+        and further subtracts one day in order to make the sleep date reflect
+        the night before’s sleep. In other words, any metrics for running,
+        heart rate, temperature are all occurring <i><u><b>after</b></u></i>
+        or before the sleep that is recorded in that date.</p>
+        <h1 class="western">Files on a user’s page (Sleep Dependent
+        Variable)</h1>
+        <p class="paragraph_doc">All files from this section are result of
+        ws_analysis/correlations_dfs/dep_var_sleep.py file.</p>
+        <h2 class="western">sleep_steps</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_sleep_steps.csv</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep dependent (sleep time dates are result of create_df_daily_sleep(df))</p>
+        <p class="paragraph_doc">This
+        output assumes the steps impact sleep.</p>
+        <h2 class="western">sleep_heart_rate</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_sleep_heart_rate.csv</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep dependent (sleep time dates are result of create_df_daily_sleep(df))</p>
+        <p class="paragraph_doc">This
+        output assumes the heart rate impact sleep.</p>
+        <h2 class="western">sleep_workout_duration</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_sleep_workout_duration.csv</p>
+        <p class="paragraph_doc">corr_sleep_workouts(df_qty_cat,
+        df_workouts)</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep dependent (sleep time dates are result of create_df_daily_sleep(df))</p>
+        <p class="paragraph_doc">This
+        output assumes the workout duration impacts sleep.</p>
+        <h2 class="western">sleep_time_cloudcover</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_sleep_time_cloudcover.csv</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep dependent (sleep time dates are result of create_df_daily_sleep(df))</p>
+        <p class="paragraph_doc">This
+        output assumes the cloud cover impacts sleep.</p>
+
+        <h2 class="western">sleep_time_temperature</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_sleep_time_temperature.csv</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep dependent (sleep time dates are result of create_df_daily_sleep(df))</p>
+        <p class="paragraph_doc">This
+        output assumes the temperature impacts sleep.</p>
+        <h1 class="western">Files on a user’s page (Sleep Independent
+        Variable)</h1>
+        <p class="paragraph_doc">All files from this section are result of
+        dep_var_steps.py</p>
+        <h2 class="western">steps_sleep</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_steps_sleep.csv</p>
+        <p class="paragraph_doc">Sleep
+        type: sleep independent (sleep time dates are result of create_df_n_minus1_daily_sleep(df_daily_sleep)).</p>
+        <p class="paragraph_doc">This
+        output assumes sleep impacts step counts the next day.</p>
+
+        <h2 class="western">steps_heart_rate_n_minus1</h2>
+        <p class="paragraph_doc">Actual
+        file name: user_{user_id:04}_df_daily_steps_heart_rate_n_minus1.csv</p>
+        <p class="paragraph_doc">heart
+        rate type: heart rate independent heart rate uses the
+        <i>create_df_n_minus1_daily_heart_rate(df_daily_heart_rate)</i>
+        function to subtract a day from the heart rate date. This output
+        assumes heart rate impacts step counts of the next day.</p>
+
+
+        <div class="execess_space"></div>
+
+        <!-- </div>col_1_sub -->
+    </div><!-- col_1 -->
+
+
+</div><!-- home_page -->
+<!-- </div>main_super -->
+{% endblock %}

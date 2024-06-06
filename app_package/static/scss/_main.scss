@@ -228,6 +228,41 @@
     }
 }
 
+.user_documentation_page{
+    display: flex;
+    flex-wrap: wrap;
+    padding-top:2rem;
+    justify-content: center;
+    align-items: center;
+    h1, h2, h3 {
+        width:100%;
+        color:var(--color_text_white);
+    }
+    .std_frame_light_gray{
+        background-color: var(--color-gray02);
+        border-radius: .5rem;
+        padding:1rem;
+        width:100%;
+      }
+    .col_1 {
+        display:flex;
+        flex-wrap: wrap;
+        gap:1rem;
+        width:80%;
+    }
+
+    .title_custom{
+        display:flex;
+        color:var(--color_text_white);
+    }
+    .paragraph_doc{
+        color:var(--color_text_white);
+    }
+    
+}
+
+
+
 
 .video_page{
     display: flex;

@@ -71,9 +71,14 @@ def privacy():
     logger_bp_main.info(f"-- in privacy page route --")
     return render_template('main/privacy.html')
 
+@bp_main.route('/user_csv_documentation', methods = ['GET', 'POST'])
+def user_csv_documentation():
+    logger_bp_main.info(f"-- in user_csv_documentation route --")
+    return render_template('main/user_csv_documentation.html')
+
 @bp_main.route('/what_sticks_video/<filename>', methods = ['GET', 'POST'])
 def what_sticks_video(filename):
-    logger_bp_main.info(f"-- in privacy page route --")
+    logger_bp_main.info(f"-- in what_sticks_video route --")
 
     if filename == "SleepTime20240130_shortDrawings.mp4":
         filename = "SleepTime_v03.mp4"
