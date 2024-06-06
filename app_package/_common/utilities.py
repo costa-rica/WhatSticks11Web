@@ -6,10 +6,16 @@ from flask_login import LoginManager
 from pytz import timezone
 from datetime import datetime
 from flask import g
+from .config import config
 
 login_manager= LoginManager()
 login_manager.login_view = 'bp_users.login'
 login_manager.login_message_category = 'info'
+
+# necessary if logger is created in this file such as for logger_request
+if not os.path.exists(os.path.join(config.WEB_ROOT,"logs")):
+    os.makedirs(os.path.join(config.WEB_ROOT,"logs"))
+
 
 @login_manager.user_loader
 def load_user(user_id):
