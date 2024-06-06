@@ -258,6 +258,13 @@
     .paragraph_doc{
         color:var(--color_text_white);
     }
+    .admin_section{
+        background-color: var(--color-gray04);
+        // background-color: var(--color_theme_blue);
+        border-radius: .5rem;
+        padding:1rem;
+        width:100%;
+    }
     
 }
 

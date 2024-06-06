@@ -1089,6 +1089,12 @@
 .user_documentation_page .paragraph_doc {
   color: var(--color_text_white);
 }
+.user_documentation_page .admin_section {
+  background-color: var(--color-gray04);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
 
 .video_page {
   display: flex;

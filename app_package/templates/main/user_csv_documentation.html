@@ -38,7 +38,11 @@
         date so that the date is now n-1 and occurring before the factor we
         believe to be depended on sleep.</p>
 
-        <h1 class="western">Key functions to produce daily metrics</h1>
+        {% if current_user.admin_users_permission %}
+        <div class="admin_section">
+
+        
+        <h1 class="western">Key functions to produce daily metrics (admin only)</h1>
         <p class="paragraph_doc">get_dateUserTz_3pm()
         </p>
         <p class="paragraph_doc">If
@@ -72,6 +76,9 @@
         the night before’s sleep. In other words, any metrics for running,
         heart rate, temperature are all occurring <i><u><b>after</b></u></i>
         or before the sleep that is recorded in that date.</p>
+        </div>  
+        {% endif %}  
+
         <h1 class="western">Files on a user’s page (Sleep Dependent
         Variable)</h1>
         <p class="paragraph_doc">All files from this section are result of
