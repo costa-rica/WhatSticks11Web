@@ -15,7 +15,7 @@
         </div>
 
         <div class="username">
-            {{ current_user.username }} data files
+            {{ current_user.username }} data files:
         </div>
 
         {% if len(user_files_list) > 0 %}
@@ -24,8 +24,13 @@
                 {% for csv_filename, csv_filename_short in zip(user_files_list, user_files_list_shortname) %}
                 <li><a href="{{ url_for('bp_users.user_file', filename= csv_filename )}}">{{ csv_filename_short }}</a></li>
                 {% endfor %}
+                <li><hr></li>
+                <li><a href="{{ url_for('bp_main.user_csv_documentation') }}"><i class="fa-regular fa-file"></i><span> CSV file documentation</span></a></li>
             </ul>
         </div><!-- paragraph_privacy -->
+        <div class="hr_for_user_home">
+            <hr>
+        </div>
 
         <div class="std_frame_light_gray">
             <div class="">
@@ -58,11 +63,6 @@
             </div>
         </div><!-- std_frame_light_gray -->
 
-
-        <div class="execess_space">
-
-            <a href="{{ url_for('bp_main.user_csv_documentation') }}"><i class="fa-regular fa-file"></i><span> CSV file documentation</span></a>
-        </div>
         <div class="execess_space"></div>
 
     </div><!-- col_1 -->
