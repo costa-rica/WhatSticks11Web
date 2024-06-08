@@ -54,6 +54,10 @@ def create_app(config_for_flask = config):
     create_folder(config_for_flask.DIR_WEBSITE_UTILITY_IMAGES)
     create_folder(config_for_flask.DIR_WEBSITE_VIDEOS)
     create_folder(config_for_flask.DB_UPLOAD)
+    # user files
+    create_folder(config_for_flask.USER_FILES)
+    create_folder(config_for_flask.DAILY_CSV)
+    create_folder(config_for_flask.RAW_FILES_FOR_DAILY_CSV)
     ############################################################################
     # Build MySQL database
     # Base.metadata.create_all(engine)
