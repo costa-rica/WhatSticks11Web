@@ -68,7 +68,7 @@
         all occurring during or <i><u><b>before</b></u></i> the sleep that is
         recorded in that date.</p>
 
-        <h2 class="western">create_df_n_minus1_daily_sleep(df_daily_sleep)</h2>
+        <h2 class="western">create_df_n_minus1_daily_sleep(user_id, df_daily_sleep)</h2>
         <p class="paragraph_doc">When
         this is used we are calculating a correlation that assumes <b>sleep
         independent</b>. This function uses the output of  create_df_daily_sleep(df)
@@ -129,7 +129,7 @@
         <p class="paragraph_doc">Actual
         file name: user_{user_id:04}_df_daily_steps_sleep.csv</p>
         <p class="paragraph_doc">Sleep
-        type: sleep independent (sleep time dates are result of create_df_n_minus1_daily_sleep(df_daily_sleep)).</p>
+        type: sleep independent (sleep time dates are result of create_df_n_minus1_daily_sleep(user_id, df_daily_sleep)).</p>
         <p class="paragraph_doc">This
         output assumes sleep impacts step counts the next day.</p>
 
